@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 20:34:31 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/03/19 22:24:50 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:04:01 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ size_t	ft_strlcat(char *dest, const char *src, size_t size)
 	src_len = ft_strlen(src);
 	if (dest_len >= size)
 		return (src_len + size);
-	while (src[i] && i + dest_len + 1 < size)
+	while (src[i] && i + dest_len < size - 1)
 	{
 		dest[dest_len + i] = src[i];
 		i++;
