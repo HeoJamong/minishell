@@ -5,19 +5,64 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/08 16:40:36 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/08/10 21:04:47by jinsecho         ###   ########.fr       */
+/*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
+/*   Updated: 2024/08/17 16:18:18 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ms_line_str_tokenizer(t_cmd *cmd, char *line)
+char	*ms_line_tokenizing_quote(char *line, int *i)
+{
+	char	*ptr;
+	int		k = 0;
+
+	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
+	if (ptr == NULL)
+		exit (1);
+	if (line[(*i)++] == 34)
+	{
+		while (line[*i + k] != 34 && line[*i + k])
+			k++;
+	}
+	else
+	{
+		while (line[*i + k] != 39 && line[*i + k])
+			k++;
+	}
+	ft_strlcpy(ptr, line + *i, k + 1);
+	(*i) += k;
+	if (line[*i] == 34 || line[*i] == 39)
+		(*i)++;
+	return (ptr);
+}
+
+char	*ms_line_tokenizing_str(char *line, int *i)
+{
+	char	*ptr;
+	int		k = 0;
+	
+	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
+	if (ptr == NULL)
+		exit (1);
+	if (ft_strchr("|><", line[*i]))
+		k++;
+	else
+	{
+		while (ft_strchr(" |><", line[*i + k]) == NULL \
+		&& line[*i + k] != 34 && line[*i + k] != 39 && line[*i + k])
+		k++;
+	}
+	ft_strlcpy(ptr, line + *i, k + 1);
+	(*i) += k;
+	return (ptr);
+}
+
+void	ms_line_tokenizer(t_cmd *cmd, char *line)
 {
 	int		i = 0;
-	int		k;
-	int		m;
 	int		line_i = 0;
+	char	*tmp;
 
 	if (line == NULL)
 		exit (1);
@@ -35,83 +80,65 @@ void	ms_line_str_tokenizer(t_cmd *cmd, char *line)
 		}
 		else if (line[i] == 34 || line[i] == 39)
 		{
-			k = 0;
-			m = 0;
-			if (line[i] == 34)
+			cmd->line_split[line_i] = ms_line_tokenizing_quote(line, &i);
+			while (ft_strchr(" |><", line[i]) == NULL && line[i])
 			{
-				while (line[i] == 34)
-					i++;
-				while (line[i + k] != 34 && line[i + k])
-					k++;
-			}
-			else
-			{
-				while (line[i] == 39)
-					i++;
-				while (line[i + k] != 39 && line[i + k])
-					k++;
-			}
-			k++;
-			cmd->line_split[line_i] = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
-			if (cmd->line_split[line_i] == NULL)
-				exit (1);
-			ft_strlcpy(cmd->line_split[line_i], line + i, k);
-			i += k;
-			if (line[i] == 34)
-			{
-				while (line[i] != 34)
-					i++;
-			}
-			else if (line[i] == 39)
-			{
-				while (line[i] != 39)
-					i++;
-			}
-			if (!(line[i] == 39 || line[i] == 34) && line[i] != ' ' && line[i])
-			{
-				while (line[i + m] != ' ' && line[i + m])
-					m++;
-				m++;
-				char	*tmp = (char *)malloc(sizeof(char) * m);
-				if (tmp == NULL)
+				if (line[i] == 34 || line[i] == 39)
+					tmp = ms_line_tokenizing_quote(line, &i);
+				else
+					tmp = ms_line_tokenizing_str(line, &i);
+				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
+				if (cmd->line_split[line_i] == NULL)
 					exit (1);
-				ft_strlcpy(tmp, line + i, m);
-				ft_strlcat(cmd->line_split[line_i], tmp, k + m);
 				free(tmp);
 			}
-			i += m;
 			line_i++;
 		}
-		else if (line[i++] == '|')
+		else if (line[i] == '|')
+			cmd->line_split[line_i++] = ms_line_tokenizing_str(line, &i);
+		else if (line[i] == '>')
 		{
-			cmd->line_split[line_i] = (char *)malloc(sizeof(char) * 2);
-			ft_strlcpy(cmd->line_split[line_i], "|", 2);
+			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			if (line[i] == '>')
+			{
+				tmp = ms_line_tokenizing_str(line, &i);
+				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
+				if (cmd->line_split[line_i] == NULL)
+					exit (1);
+				free(tmp);
+			}
 			line_i++;
 		}
-		// else if (line[i] == '>' || line[i] == '<')
-		// {
-		// 	cmd->line_split[line_i] = (char *)malloc(sizeof(char) * 2);
-		// 	if (line[i++] == '>')
-		// 		ft_strlcpy(cmd->line_split[line_i], ">", 2);
-		// 	else
-		// 		ft_strlcpy(cmd->line_split[line_i], "<", 2);
-		// 	line_i++;
-		// }
-		// else if (line[i] == '>>' || line[i] == '<<')
-		// {
-		// 	cmd->line_split[line_i] = (char *)malloc(sizeof(char) * 3);
-		// 	if (line[i] == '>>')
-		// 		ft_strlcpy(cmd->line_split[line_i], ">>", 3);
-		// 	else
-		// 		ft_strlcpy(cmd->line_split[line_i], "<<", 3);
-		// 	line_i++;
-		// 	i += 2;
-		// }
+		else if (line[i] == '<')
+		{
+			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			if (line[i] == '<')
+			{
+				tmp = ms_line_tokenizing_str(line, &i);
+				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
+				if (cmd->line_split[line_i] == NULL)
+					exit (1);
+				free(tmp);
+			}
+			line_i++;
+		}
 		else
 		{
-			while (line[i + k] != 39 && line[i + k])
-				k++;
-			i++;
+			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			if (cmd->line_split[line_i] == NULL)
+				exit (1);
+			while (ft_strchr(" |><", line[i]) == NULL && line[i])
+			{
+				if (line[i] == 34 || line[i] == 39)
+					tmp = ms_line_tokenizing_quote(line, &i);
+				else
+					tmp = ms_line_tokenizing_str(line, &i);
+				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
+				if (cmd->line_split[line_i] == NULL)
+					exit (1);
+				free(tmp);
+			}
+			line_i++;
 		}
 	}
 	cmd->line_split[line_i] = NULL;
@@ -130,35 +157,16 @@ void	ms_line_str_tokenizer(t_cmd *cmd, char *line)
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	ms_line_str_tokenizer(cmd, ft_strtrim(cmd->line, " "));
-	// if (ft_strnstr(cmd->line_split[0], "echo", 4) && ft_strlen(cmd->line_split[0]) == 4)
-	// {
-	// 	if (ft_strnstr(cmd->line_split[1], "-n", 2) && ft_strlen(cmd->line_split[1]) == 2)
-	// 	{
-	// 		;
-	// 	}
-	// }
-	// else if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
-	// {
-		
-	// }
-	// else if (ft_strnstr(cmd->line_split[0], "pwd", 3) && ft_strlen(cmd->line_split[0]) == 3)
-	// {
-
-	// }
-	// else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
-	// {
-	// 	printf("exit\n");
-	// 	if (cmd->line_split[1])
-	// 		printf("minishell: exit: %s: numeric argument required\n", cmd->line_split[1]);
-	// 	exit (0);
-	// }
+	ms_line_tokenizer(cmd, ft_strtrim(cmd->line, " "));
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_cmd	cmd;
 
+	(void)av;
+	if (ac != 1)
+		return (0);
 	while (1)
 	{
 		ms_term_set(&cmd);

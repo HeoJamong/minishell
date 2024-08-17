@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 17:20:45 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/05/11 16:53:37 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/08/16 00:28:23 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (ptr_arr == NULL)
 		return (NULL);
 	join_input(ptr_arr, s1, s2);
+	free(s1);
 	return (ptr_arr);
 }
