@@ -20,29 +20,29 @@ void	alter_signal_handler(int signum)
 	}
 }
 
-static void	mini_alter_signal(void)
+static void	ms_alter_signal(void)
 {
 	signal(SIGINT, alter_signal_handler);
 	signal(SIGQUIT, alter_signal_handler);
 }
 
-static void	mini_current_signal(void)
+static void	ms_current_signal(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }
 
-void	mini_term_set(t_cmd *cmd)
+void	ms_term_set(t_cmd *cmd)
 {
-	tcgetattr(0, &cmd->current_term);
-	tcgetattr(0, &cmd->alter_term);
-	cmd->alter_term.c_lflag &= ~512;
-	mini_alter_signal();
-	tcsetattr(0, TCSANOW, &cmd->alter_term);
+	tcgetattr(0, &cmd->term.current_term);
+	tcgetattr(0, &cmd->term.alter_term);
+	cmd->term.alter_term.c_lflag &= ~512;
+	ms_alter_signal();
+	tcsetattr(0, TCSANOW, &cmd->term.alter_term);
 }
 
-void	mini_term_reset(t_cmd *cmd)
+void	ms_term_reset(t_cmd *cmd)
 {
-	mini_current_signal();
-	tcsetattr(0, TCSANOW, &cmd->current_term);
+	ms_current_signal();
+	tcsetattr(0, TCSANOW, &cmd->term.current_term);
 }
