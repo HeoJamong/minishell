@@ -1,9 +1,10 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 
 NAME =	minishell
 SRC =	main.c \
-		mini_signal.c
+		mini_signal.c \
+		mini_utils.c
 
 OBJ =	$(SRC:.c=.o)
 
