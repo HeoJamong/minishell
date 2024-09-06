@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/02 20:45:46 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:59:00 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <termios.h>
+# define SINGLE_QUOTE 39
+# define DOUBLE_QUOTE 34
 
 typedef struct	s_term
 {
@@ -35,6 +37,14 @@ typedef	struct	s_cmd
 	char			**envp;
 	struct s_term	term;
 }	t_cmd;
+typedef structs_env_var
+{
+	char	*env_tmp;
+	char	*str_tmp;
+	int		cnt;
+	int		len;
+	int		n;
+}	t_env_var;
 
 void	ms_term_set(t_cmd *cmd);
 void	ms_term_reset(t_cmd *cmd);

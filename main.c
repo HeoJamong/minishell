@@ -6,49 +6,50 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/03 19:25:47 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/05 13:57:22jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ms_line_replace_env(t_cmd *cmd, char *line, int *n)
+static void	replace_env_find(t_cmd *cmd, char **ptr, char *line, int *n)
+{
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	while (ft_isalnum(line[*n]) || line[*n] == '_')
+		(*n)++;
+	tmp = (char *)malloc(sizeof(char) * (*n));
+	if (tmp == NULL)
+		exit (EXIT_FAILURE);
+	ft_strlcpy(tmp, line + 1, *n);
+	while (cmd->envp[i])
+	{
+		if (ft_envchr(cmd->envp[i], tmp))
+		{
+			*ptr = ft_strdup(ft_strchr(cmd->envp[i], '=') + 1);
+			free(tmp);
+			return ;
+		}
+		i++;
+	}
+	*ptr = ft_strdup("");
+	free(tmp);
+}
+
+static char	*ms_str_replace_env(t_cmd *cmd, char *line, int *n)
 {
 	char	*ptr;
-	char	*tmp;
-	int		i = 1;
 
-	if (line[i] == '?')
+	if (line[*n] == '?')
 	{
 		*n = 2;
 		ptr = ft_itoa(0);
 	}
-	else if (ft_isalpha(line[i]) || line[i] == '_')
-	{
-		while (ft_isalnum(line[i]) || line[i] == '_')
-		{
-			(*n)++;
-			i++;
-		}
-		tmp = (char *)malloc(sizeof(char) * i);
-		if (tmp == NULL)
-			exit (EXIT_FAILURE);
-		ft_strlcpy(tmp, line + 1, i);
-		i = 0;
-		while (cmd->envp[i])
-		{
-			if (ft_envchr(cmd->envp[i], tmp))
-			{
-				ptr = ft_strdup(ft_strchr(cmd->envp[i], '=') + 1);
-				free(tmp);
-				return (ptr);
-			}
-			i++;
-		}
-		ptr = ft_strdup("");
-		free(tmp);
-	}
-	else if (ft_isdigit(line[i]))
+	else if (ft_isalpha(line[*n]) || line[*n] == '_')
+		replace_env_find(cmd, &ptr, line, n);
+	else if (ft_isdigit(line[*n]))
 	{
 		*n = 2;
 		ptr = ft_strdup("");
@@ -56,83 +57,103 @@ char	*ms_line_replace_env(t_cmd *cmd, char *line, int *n)
 	else
 		ptr = ft_strdup("");
 	return (ptr);
+}
+
+void	ms_line_replace_env(t_cmd *cmd, char **ptr, char *line)
+{
+	char	*env_tmp;
+	char	*str_tmp;
+	int		len;
+	int		cnt;
+	int		n;
+
+	cnt = 0;
+	n = 1;
+	while ((*ptr)[cnt] != '$' && (*ptr)[cnt])
+		cnt++;
+	while ((*ptr)[cnt])
+	{
+		env_tmp = ms_str_replace_env(cmd, &(*ptr)[cnt], &n);
+		if (n == 1)
+			cnt++;
+		else
+		{
+			len = ft_strlen(line) + ft_strlen(env_tmp);
+			*ptr = ft_realloc(*ptr, len + 1);
+			str_tmp = ft_strdup(&(*ptr)[cnt] + n);
+			ft_strlcpy(&(*ptr)[cnt], env_tmp, ft_strlen(env_tmp) + 1);
+			ft_strlcat(*ptr, str_tmp, len + 1);
+			cnt += ft_strlen(env_tmp);
+			free(str_tmp);
+		}
+		n = 1;
+		while ((*ptr)[cnt] != '$' && (*ptr)[cnt])
+			cnt++;
+		free(env_tmp);
+	}
+}
+
+int	quote_flag_len(char *line, char c, int *i, int *flag)
+{
+	int	k;
+	
+	k = 0;
+	if (c == DOUBLE_QUOTE)
+		*flag = 1;
+	while (line[*i + k] != c && line[*i + k])
+		k++;
+	return (k);
 }
 
 char	*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i)
 {
 	char	*ptr;
-	char	*tmp;
-	char	*env_tmp = NULL;
-	char	*str_tmp;
-	// char	*ptr_tmp;
-	int		k = 0;
-	int		n = 1;
-	int		quote_flag = 0;
+	int		k;
+	int		quote_flag;
 
+	quote_flag = 0;
 	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
 	if (ptr == NULL)
-		exit (1);
-	if (line[(*i)++] == 34)
-	{
-		quote_flag = 1;
-		while (line[*i + k] != 34 && line[*i + k])
-			k++;
-	}
+		exit (EXIT_FAILURE);
+	if (line[(*i)++] == DOUBLE_QUOTE)
+		k = quote_flag_len(line, DOUBLE_QUOTE, i, &quote_flag);
 	else
-	{
-		while (line[*i + k] != 39 && line[*i + k])
-			k++;
-	}
+		k = quote_flag_len(line, SINGLE_QUOTE, i, &quote_flag);
 	ft_strlcpy(ptr, line + *i, k + 1);
 	(*i) += k;
-	if (line[*i] == 34 || line[*i] == 39)
+	if (line[*i] == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	else
 		(*i)++;
 	if (quote_flag)
-	{
-		env_tmp = ft_strchr(ptr, '$');
-		while (env_tmp != NULL)
-		{
-			tmp = ms_line_replace_env(cmd, env_tmp, &n);
-			if (n == 1)
-			{
-				free(tmp);
-				break ;
-			}
-			else
-			{
-				ptr = ft_realloc(ptr, ft_strlen(line) + ft_strlen(tmp) + 1);
-				env_tmp = ft_strchr(ptr, '$');
-				str_tmp = ft_strdup(env_tmp + n);
-				ft_strlcpy(env_tmp, tmp, ft_strlen(tmp) + 1);
-				ptr = ft_strjoin(ptr, str_tmp);
-				env_tmp = ft_strchr(ptr, '$');
-				n = 1;
-				free(tmp);
-				free(str_tmp);
-			}
-		}
-	}
+		ms_line_replace_env(cmd, &ptr, line);
 	return (ptr);
 }
 
-char	*ms_line_tokenizing_str(char *line, int *i)
+char	*ms_line_tokenizing_str(t_cmd *cmd, char *line, int *i)
 {
 	char	*ptr;
-	int		k = 0;
+	int		k;
 	
+	k = 0;
 	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
 	if (ptr == NULL)
-		exit (1);
+		exit (EXIT_FAILURE);
 	if (ft_strchr("|><", line[*i]))
 		k++;
 	else
 	{
 		while (ft_strchr(" |><\t\n", line[*i + k]) == NULL \
-		&& line[*i + k] != 34 && line[*i + k] != 39 && line[*i + k])
+		&& line[*i + k] != DOUBLE_QUOTE \
+		&& line[*i + k] != SINGLE_QUOTE && line[*i + k])
 		k++;
 	}
 	ft_strlcpy(ptr, line + *i, k + 1);
 	(*i) += k;
+	ms_line_replace_env(cmd, &ptr, line);
 	return (ptr);
 }
 
@@ -142,13 +163,9 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	int		line_i = 0;
 	char	*tmp;
 
-	if (line == NULL)
-		exit (1);
-	// 34: "", 39: ' 아스키
-	int	line_len = ft_strlen(line);
-	cmd->line_split = (char **)malloc(sizeof(char *) * line_len);
+	cmd->line_split = (char **)malloc(sizeof(char *) * (ft_strlen(line) + 1));
 	if (cmd->line_split == NULL)
-		exit (1);
+		exit (EXIT_FAILURE);
 	while (line[i])
 	{
 		if (line[i] == ' ')
@@ -156,64 +173,83 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 			while (line[i] == ' ')
 				i++;
 		}
-		else if (line[i] == 34 || line[i] == 39)
+		else if (line[i] == DOUBLE_QUOTE || line[i] == SINGLE_QUOTE)
 		{
 			cmd->line_split[line_i] = ms_line_tokenizing_quote(cmd, line, &i);
 			while (ft_strchr(" |><", line[i]) == NULL && line[i])
 			{
-				if (line[i] == 34 || line[i] == 39)
+				if (line[i] == DOUBLE_QUOTE || line[i] == SINGLE_QUOTE)
+				{
 					tmp = ms_line_tokenizing_quote(cmd, line, &i);
+					if (tmp == NULL)
+					{
+						cmd->line_split[++line_i] = NULL;
+						i = 0;
+						while (cmd->line_split[i])
+							free(cmd->line_split[i++]);
+						free(cmd->line_split);
+						return ;
+					}
+				}
 				else
-					tmp = ms_line_tokenizing_str(line, &i);
+					tmp = ms_line_tokenizing_str(cmd, line, &i);
 				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
-				if (cmd->line_split[line_i] == NULL)
-					exit (1);
-				free(tmp);
 			}
 			line_i++;
 		}
 		else if (line[i] == '|')
-			cmd->line_split[line_i++] = ms_line_tokenizing_str(line, &i);
+			cmd->line_split[line_i++] = ms_line_tokenizing_str(cmd, line, &i);
 		else if (line[i] == '>')
 		{
-			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			cmd->line_split[line_i] = ms_line_tokenizing_str(cmd, line, &i);
 			if (line[i] == '>')
 			{
-				tmp = ms_line_tokenizing_str(line, &i);
+				tmp = ms_line_tokenizing_str(cmd, line, &i);
 				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
 				if (cmd->line_split[line_i] == NULL)
-					exit (1);
+					exit (EXIT_FAILURE);
 				free(tmp);
 			}
 			line_i++;
 		}
 		else if (line[i] == '<')
 		{
-			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			cmd->line_split[line_i] = ms_line_tokenizing_str(cmd, line, &i);
 			if (line[i] == '<')
 			{
-				tmp = ms_line_tokenizing_str(line, &i);
+				tmp = ms_line_tokenizing_str(cmd, line, &i);
 				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
 				if (cmd->line_split[line_i] == NULL)
-					exit (1);
+					exit (EXIT_FAILURE);
 				free(tmp);
 			}
 			line_i++;
 		}
 		else
 		{
-			cmd->line_split[line_i] = ms_line_tokenizing_str(line, &i);
+			cmd->line_split[line_i] = ms_line_tokenizing_str(cmd, line, &i);
 			if (cmd->line_split[line_i] == NULL)
-				exit (1);
+				exit (EXIT_FAILURE);
 			while (ft_strchr(" |><", line[i]) == NULL && line[i])
 			{
-				if (line[i] == 34 || line[i] == 39)
+				if (line[i] == DOUBLE_QUOTE || line[i] == SINGLE_QUOTE)
+				{
 					tmp = ms_line_tokenizing_quote(cmd, line, &i);
+					if (tmp == NULL)
+					{
+						cmd->line_split[++line_i] = NULL;
+						i = 0;
+						while (cmd->line_split[i])
+							free(cmd->line_split[i++]);
+						free(cmd->line_split);
+						return ;
+					}
+				}
 				else
-					tmp = ms_line_tokenizing_str(line, &i);
+					tmp = ms_line_tokenizing_str(cmd, line, &i);
 				cmd->line_split[line_i] = ft_strjoin(cmd->line_split[line_i], tmp);
 				if (cmd->line_split[line_i] == NULL)
-					exit (1);
+					exit (EXIT_FAILURE);
 				free(tmp);
 			}
 			line_i++;
@@ -223,19 +259,17 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 
 	i = 0;
 	while(cmd->line_split[i])
-		printf("check: %s\n", cmd->line_split[i++]);
-	
+		printf("check:%s\n", cmd->line_split[i++]);
 	
 	i = 0;
 	while (cmd->line_split[i])
 		free(cmd->line_split[i++]);
 	free(cmd->line_split);
-	free(line);
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	ms_line_tokenizer(cmd, ft_strtrim(cmd->line, " "));
+	ms_line_tokenizer(cmd, cmd->line);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -253,7 +287,7 @@ int	main(int ac, char **av, char **envp)
 		if (cmd.line == NULL)
 		{
 			printf("exit\n");
-			exit (0);
+			exit (EXIT_SUCCESS);
 		}
 		add_history(cmd.line);
 		ms_term_reset(&cmd);

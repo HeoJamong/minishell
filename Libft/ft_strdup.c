@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42gyeongsa      +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:55:25 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/03/01 15:12:16 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/03 20:16:34 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_strdup(const char *string)
 		len++;
 	ptr_arr = (char *)malloc(sizeof(char) * (len + 1));
 	if (ptr_arr == NULL)
-		return (NULL);
+		exit (EXIT_FAILURE);
 	while (i < len)
 	{
 		ptr_arr[i] = string1[i];

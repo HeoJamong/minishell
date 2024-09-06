@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/02 20:43:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/03 22:49:48 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*ft_realloc(char *ptr, int size)
 	int		i;
 
 	i = 0;
-	tmp = (char *)malloc(sizeof(char) * size);
+	tmp = (char *)malloc(sizeof(char) * size + 1);
 	if (tmp == NULL)
 		exit (EXIT_FAILURE);
 	ft_strlcpy(tmp, ptr, ft_strlen(ptr) + 1);
