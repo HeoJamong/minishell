@@ -42,6 +42,7 @@ static char	*ms_str_replace_env(t_cmd *cmd, char *line, int *n)
 {
 	char	*ptr;
 
+	*n = 1;
 	if (line[*n] == '?')
 	{
 		*n = 2;
@@ -61,35 +62,29 @@ static char	*ms_str_replace_env(t_cmd *cmd, char *line, int *n)
 
 void	ms_line_replace_env(t_cmd *cmd, char **ptr, char *line)
 {
-	char	*env_tmp;
-	char	*str_tmp;
-	int		len;
-	int		cnt;
-	int		n;
+	t_env_var	env;
 
-	cnt = 0;
-	n = 1;
-	while ((*ptr)[cnt] != '$' && (*ptr)[cnt])
-		cnt++;
-	while ((*ptr)[cnt])
+	env.cnt = 0;
+	while ((*ptr)[env.cnt] != '$' && (*ptr)[env.cnt])
+		(env.cnt)++;
+	while ((*ptr)[env.cnt])
 	{
-		env_tmp = ms_str_replace_env(cmd, &(*ptr)[cnt], &n);
-		if (n == 1)
-			cnt++;
+		env.env_tmp = ms_str_replace_env(cmd, &(*ptr)[env.cnt], &env.n);
+		if (env.n == 1)
+			(env.cnt)++;
 		else
 		{
-			len = ft_strlen(line) + ft_strlen(env_tmp);
-			*ptr = ft_realloc(*ptr, len + 1);
-			str_tmp = ft_strdup(&(*ptr)[cnt] + n);
-			ft_strlcpy(&(*ptr)[cnt], env_tmp, ft_strlen(env_tmp) + 1);
-			ft_strlcat(*ptr, str_tmp, len + 1);
-			cnt += ft_strlen(env_tmp);
-			free(str_tmp);
+			env.len = ft_strlen(line) + ft_strlen(env.env_tmp);
+			*ptr = ft_realloc(*ptr, env.len + 1);
+			env.str_tmp = ft_strdup(&(*ptr)[env.cnt] + env.n);
+			ft_strlcpy(&(*ptr)[env.cnt], env.env_tmp, ft_strlen(env.env_tmp) + 1);
+			ft_strlcat(*ptr, env.str_tmp, env.len + 1);
+			(env.cnt) += ft_strlen(env.env_tmp);
+			free(env.str_tmp);
 		}
-		n = 1;
-		while ((*ptr)[cnt] != '$' && (*ptr)[cnt])
-			cnt++;
-		free(env_tmp);
+		while ((*ptr)[env.cnt] != '$' && (*ptr)[env.cnt])
+			(env.cnt)++;
+		free(env.env_tmp);
 	}
 }
 
@@ -256,20 +251,82 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 		}
 	}
 	cmd->line_split[line_i] = NULL;
+	cmd->line_i = line_i;
 
 	i = 0;
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
-	
-	i = 0;
-	while (cmd->line_split[i])
-		free(cmd->line_split[i++]);
-	free(cmd->line_split);
+}
+
+void	ms_builtin_func(t_cmd *cmd)
+{
+	char	*tmp;
+
+	if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
+	{
+		if (cmd->line_i > 2)
+			printf("minishell: cd: too many arguments\n");
+		else if (cmd->line_i == 1)
+			chdir(getenv("HOME"));
+		else if (strncmp("~", cmd->line_split[1], 1) == 0 && ft_strlen(cmd->line_split[1]) == 1)
+			chdir(getenv("HOME"));
+		else if (strncmp("/", cmd->line_split[1], 1) == 0 && ft_strlen(cmd->line_split[1]) == 1)
+			chdir("/");
+		else
+		{
+			tmp = ft_strjoin(getcwd(NULL, 0), "/");
+			tmp = ft_strjoin(tmp, cmd->line_split[1]);
+			chdir(tmp);
+			free(tmp);
+		}
+	}
+	else if (ft_strnstr(cmd->line_split[0], "pwd", 3) && ft_strlen(cmd->line_split[0]) == 3)
+	{
+		char	*currdir;
+
+		currdir = getcwd(NULL, 0);// goinfre의 경우는 아마 심볼릭 링크로 연결되어 있어서, 표현된 디렉토리에 차이를 보임
+		if (currdir == NULL)		// 이부분 수정을 할 지 고민중
+			exit (EXIT_FAILURE);
+		printf("%s\n", currdir);
+		free(currdir);
+	}
+	else if (ft_strnstr(cmd->line_split[0], "echo", 4) && ft_strlen(cmd->line_split[0]) == 4)
+	{
+		int	i = 1;
+
+		if (ft_strnstr(cmd->line_split[1], "-n", 2) && ft_strlen(cmd->line_split[1]) == 2)
+		{
+			i = 2;
+			while (i + 1 < cmd->line_i)
+				printf("%s ", cmd->line_split[i++]);
+			printf("%s", cmd->line_split[i]);
+		}
+		else
+		{
+			while (i + 1 < cmd->line_i)
+				printf("%s ", cmd->line_split[i++]);
+			printf("%s\n", cmd->line_split[i]);
+		}
+	}
+	else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
+	{
+		printf("exit\n");
+		if (cmd->line_i == 1)
+			exit(EXIT_SUCCESS);
+		else
+			printf("minishell: exit: too many arguments\n");
+	}
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	ms_line_tokenizer(cmd, cmd->line);
+	ms_line_tokenizer(cmd, cmd->line);	
+	ms_builtin_func(cmd);
+
+	int	i = 0;
+	while (cmd->line_split[i])
+		free(cmd->line_split[i++]);
+	free(cmd->line_split);
 }
 
 int	main(int ac, char **av, char **envp)

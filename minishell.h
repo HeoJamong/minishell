@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/06 15:59:00 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/06 18:12:54 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,13 @@ typedef struct	s_term
 }	t_term;
 typedef	struct	s_cmd
 {
+	int				line_i;
 	char			*line;
 	char			**line_split;
 	char			**envp;
 	struct s_term	term;
 }	t_cmd;
-typedef structs_env_var
+typedef struct	s_env_var
 {
 	char	*env_tmp;
 	char	*str_tmp;
