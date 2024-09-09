@@ -4,7 +4,8 @@ CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 NAME =	minishell
 SRC =	main.c \
 		mini_signal.c \
-		mini_utils.c
+		mini_utils.c \
+		env.c
 
 OBJ =	$(SRC:.c=.o)
 
