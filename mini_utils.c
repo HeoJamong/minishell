@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/03 22:49:48 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/09 17:20:42 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@ char	*ft_envchr(char *env, char *str)
 char	*ft_realloc(char *ptr, int size)
 {
 	char	*tmp;
-	int		i;
 
-	i = 0;
 	tmp = (char *)malloc(sizeof(char) * size + 1);
 	if (tmp == NULL)
 		exit (EXIT_FAILURE);
