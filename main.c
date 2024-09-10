@@ -260,6 +260,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 
 void	ms_builtin_func(t_cmd *cmd)
 {
+	int		dir;
 	char	*tmp;
 
 	if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
@@ -268,15 +269,40 @@ void	ms_builtin_func(t_cmd *cmd)
 			printf("minishell: cd: too many arguments\n");
 		else if (cmd->line_i == 1)
 			chdir(getenv("HOME"));
-		else if (strncmp("~", cmd->line_split[1], 1) == 0 && ft_strlen(cmd->line_split[1]) == 1)
-			chdir(getenv("HOME"));
-		else if (strncmp("/", cmd->line_split[1], 1) == 0 && ft_strlen(cmd->line_split[1]) == 1)
-			chdir("/");
+		else if (strncmp("~", cmd->line_split[1], 1) == 0)
+		{
+			if (ft_strlen(cmd->line_split[1]) == 1)
+				chdir(getenv("HOME"));
+			else if (cmd->line_split[1][1] != '/')
+			{
+				tmp = cmd->line_split[1];
+				dir = chdir(tmp);
+				if (dir)
+					printf("minishell: cd: %s: No such file or directory\n", tmp);
+			}
+			else
+			{
+				tmp = ft_strjoin(ft_strdup(getenv("HOME")), &(cmd->line_split[1][1]));
+				dir = chdir(tmp);
+				if (dir)
+					printf("minishell: cd: %s: No such file or directory\n", tmp);
+				free(tmp);
+			}
+		}
+		else if (strncmp("/", cmd->line_split[1], 1) == 0)
+		{
+			tmp = cmd->line_split[1];
+			dir = chdir(tmp);
+			if (dir)
+				printf("minishell: cd: %s: No such file or directory\n", tmp);
+		}
 		else
 		{
 			tmp = ft_strjoin(getcwd(NULL, 0), "/");
 			tmp = ft_strjoin(tmp, cmd->line_split[1]);
-			chdir(tmp);
+			dir = chdir(tmp);
+			if (dir)
+				printf("minishell: cd: %s: No such file or directory\n", cmd->line_split[1]);
 			free(tmp);
 		}
 	}
