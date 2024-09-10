@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/06 18:12:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:00:16 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,7 @@ void	ms_term_set(t_cmd *cmd);
 void	ms_term_reset(t_cmd *cmd);
 char	*ft_envchr(char *env, char *str);
 char	*ft_realloc(char *ptr, int size);
-
+char	**set_env(char **envp);
+int		ft_export(char *str, t_cmd *cmd);
+void	print_env(char **env);
 #endif

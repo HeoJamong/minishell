@@ -43,7 +43,7 @@ int check_env(char *str, char *env)
         i++;
     if (i == 0)
         return (0);
-    if ((str[i] == '=') && (env[i] == '=') || (env[i] == '=') || str[i] == 0)
+    if (((str[i] == '=') && (env[i] == '=')))
         return (1); //같은 이름의 환경 변수가 존재할 때
     return (0); //존재 하지 않는 환경 변수일 경우
 }
@@ -54,21 +54,23 @@ void    new_export(char *str, char **new, int index)
     new[index + 1] = NULL;
 }
 
-int ft_export(char *str, char ***env)
+int ft_export(char *str, t_cmd *cmd)
 {
     int i;
     char    **new;
 
-    if (str[0] == '=' || str[0] == '\0' || ft_isalnum(str[0])) // 이거 뭐 _랑 더 있는데 추가해야함
+	printf("호출 됐음\n");
+	print_env(cmd->envp);
+    if (str[0] == '=' || str[0] == '\0' || ft_isdigit(str[0])) // 이거 뭐 _랑 더 있는데 추가해야함
         return (0);
     i = 0;
-    while((*env)[i])
+    while((cmd->envp)[i])
     {
-        if (check_env(str, (*env)[i]))
+        if (check_env(str, (cmd->envp)[i]))
         {
             //이미 존재하는 이름의 환경변수라면 기존에 할당 된 값을 프리하고 새로 할당
-            free((*env)[i]);
-            (*env)[i] = ft_strdup(str);
+            free((cmd->envp)[i]);
+            (cmd->envp)[i] = ft_strdup(str);
             return (1);
         }
         i++;
@@ -77,14 +79,14 @@ int ft_export(char *str, char ***env)
     if (new == NULL)
         exit(1);
     i = 0;
-    while (env[i]) //무지성 복사후 초기화 (아니 그냥 연결리스트할껄;;;;;)
+    while (cmd->envp[i]) //무지성 복사후 초기화 (아니 그냥 연결리스트할껄;;;;;)
     {
-        new[i] = ft_strdup((*env)[i]);
-        free((*env)[i]);
+        new[i] = ft_strdup((cmd->envp)[i]);
+        free((cmd->envp)[i]);
         i++;
     }
     new_export(str, new ,i);
-    free(*env);
-    *env = new;
+    free(cmd->envp);
+    cmd->envp = new;
     return (1);
 }

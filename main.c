@@ -342,6 +342,12 @@ void	ms_builtin_func(t_cmd *cmd)
 		else
 			printf("minishell: exit: too many arguments\n");
 	}
+	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
+	{
+		if(ft_export(cmd->line_split[1], cmd) == 1)	
+			printf("ok\n");
+		print_env(cmd->envp);
+	}
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
@@ -362,7 +368,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (ac != 1)
 		return (0);
-	cmd.envp = envp;
+	cmd.envp = set_env(envp);
 	while (1)
 	{
 		ms_term_set(&cmd);
