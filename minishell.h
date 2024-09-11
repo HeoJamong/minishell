@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/10 16:00:16 by jheo             ###   ########.fr       */
+/*   Updated: 2024/09/11 14:06:53 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,5 @@ char	*ft_realloc(char *ptr, int size);
 char	**set_env(char **envp);
 int		ft_export(char *str, t_cmd *cmd);
 void	print_env(char **env);
+int		ft_unset(char *str, t_cmd *cmd);
 #endif
