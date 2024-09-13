@@ -5,8 +5,9 @@ NAME =	minishell
 SRC =	main.c \
 		mini_signal.c \
 		mini_utils.c \
-		env.c \
-		unset.c
+		mini_env.c \
+		mini_unset.c \
+		mini_replace_env
 
 OBJ =	$(SRC:.c=.o)
 

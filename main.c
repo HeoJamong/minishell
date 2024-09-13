@@ -12,82 +12,6 @@
 
 #include "minishell.h"
 
-static void	replace_env_find(t_cmd *cmd, char **ptr, char *line, int *n)
-{
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	while (ft_isalnum(line[*n]) || line[*n] == '_')
-		(*n)++;
-	tmp = (char *)malloc(sizeof(char) * (*n));
-	if (tmp == NULL)
-		exit (EXIT_FAILURE);
-	ft_strlcpy(tmp, line + 1, *n);
-	while (cmd->envp[i])
-	{
-		if (ft_envchr(cmd->envp[i], tmp))
-		{
-			*ptr = ft_strdup(ft_strchr(cmd->envp[i], '=') + 1);
-			free(tmp);
-			return ;
-		}
-		i++;
-	}
-	*ptr = ft_strdup("");
-	free(tmp);
-}
-
-static char	*ms_str_replace_env(t_cmd *cmd, char *line, int *n)
-{
-	char	*ptr;
-
-	*n = 1;
-	if (line[*n] == '?')
-	{
-		*n = 2;
-		ptr = ft_itoa(0);
-	}
-	else if (ft_isalpha(line[*n]) || line[*n] == '_')
-		replace_env_find(cmd, &ptr, line, n);
-	else if (ft_isdigit(line[*n]))
-	{
-		*n = 2;
-		ptr = ft_strdup("");
-	}
-	else
-		ptr = ft_strdup("");
-	return (ptr);
-}
-
-void	ms_line_replace_env(t_cmd *cmd, char **ptr, char *line)
-{
-	t_env_var	env;
-
-	env.cnt = 0;
-	while ((*ptr)[env.cnt] != '$' && (*ptr)[env.cnt])
-		(env.cnt)++;
-	while ((*ptr)[env.cnt])
-	{
-		env.env_tmp = ms_str_replace_env(cmd, &(*ptr)[env.cnt], &env.n);
-		if (env.n == 1)
-			(env.cnt)++;
-		else
-		{
-			env.len = ft_strlen(line) + ft_strlen(env.env_tmp);
-			*ptr = ft_realloc(*ptr, env.len + 1);
-			env.str_tmp = ft_strdup(&(*ptr)[env.cnt] + env.n);
-			ft_strlcpy(&(*ptr)[env.cnt], env.env_tmp, ft_strlen(env.env_tmp) + 1);
-			ft_strlcat(*ptr, env.str_tmp, env.len + 1);
-			(env.cnt) += ft_strlen(env.env_tmp);
-			free(env.str_tmp);
-		}
-		while ((*ptr)[env.cnt] != '$' && (*ptr)[env.cnt])
-			(env.cnt)++;
-		free(env.env_tmp);
-	}
-}
-
 int	quote_flag_len(char *line, char c, int *i, int *flag)
 {
 	int	k;
@@ -253,9 +177,9 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	cmd->line_split[line_i] = NULL;
 	cmd->line_i = line_i;
 
-	i = 0;
-	while(cmd->line_split[i])
-		printf("check:%s\n", cmd->line_split[i++]);
+	// i = 0;
+	// while(cmd->line_split[i])
+	// 	printf("check:%s\n", cmd->line_split[i++]);
 }
 
 void	ms_builtin_func(t_cmd *cmd)
@@ -334,14 +258,6 @@ void	ms_builtin_func(t_cmd *cmd)
 			printf("%s\n", cmd->line_split[i]);
 		}
 	}
-	else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
-	{
-		printf("exit\n");
-		if (cmd->line_i == 1)
-			exit(EXIT_SUCCESS);
-		else
-			printf("minishell: exit: too many arguments\n");
-	}
 	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
 	{
 		if (ft_export(cmd->line_split[1], cmd) == 1)	
@@ -356,6 +272,15 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "env",3))
 		print_env(cmd->envp);
+	else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
+	{
+		printf("exit\n");
+		if (cmd->line_i == 1)
+			exit(EXIT_SUCCESS);
+		else
+			printf("minishell: exit: too many arguments\n");
+	}
+
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
