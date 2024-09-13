@@ -17,7 +17,7 @@ int	ft_contains(char *str, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strnstr(envp[i], str, ft_strlen(str)))
+		if (ft_strnstr(envp[i], str, ft_strlen(str))&& envp[i][strlen(str)] == '=')
 			return (i);
 		i++;
 	}
@@ -48,13 +48,15 @@ int	ft_unset(char *str, t_cmd *cmd)
 			free(cmd->envp[index]);
 			index++;
 		}
-		free(cmd->envp[i + 1]);
+		free(cmd->envp[i]);
 		while (i + 1 < len)
 		{
 			new[index] = ft_strdup(cmd->envp[i + 1]);
 			free(cmd->envp[i + 1]);
+			index++;
 			i++;
 		}
+		new[index] = NULL;
 		free(cmd->envp);
 		cmd->envp = new;
 	}
