@@ -354,6 +354,8 @@ void	ms_builtin_func(t_cmd *cmd)
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
+	else if (ft_strnstr(cmd->line_split[0], "env",3))
+		print_env(cmd->envp);
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
