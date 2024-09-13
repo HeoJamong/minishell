@@ -177,9 +177,9 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	cmd->line_split[line_i] = NULL;
 	cmd->line_i = line_i;
 
-	// i = 0;
-	// while(cmd->line_split[i])
-	// 	printf("check:%s\n", cmd->line_split[i++]);
+	i = 0;
+	while(cmd->line_split[i])
+		printf("check:%s\n", cmd->line_split[i++]);
 }
 
 void	ms_builtin_func(t_cmd *cmd)
@@ -192,6 +192,8 @@ void	ms_builtin_func(t_cmd *cmd)
 		if (cmd->line_i > 2)
 			printf("minishell: cd: too many arguments\n");
 		else if (cmd->line_i == 1)
+			chdir(getenv("HOME"));
+		else if (ft_strlen(cmd->line_split[1]) == 0)
 			chdir(getenv("HOME"));
 		else if (strncmp("~", cmd->line_split[1], 1) == 0)
 		{
