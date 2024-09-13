@@ -344,7 +344,13 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
 	{
-		if(ft_export(cmd->line_split[1], cmd) == 1)	
+		if (ft_export(cmd->line_split[1], cmd) == 1)	
+			printf("ok\n");
+		print_env(cmd->envp);
+	}
+	else if (ft_strnstr(cmd->line_split[0], "unset", 5) && ft_strlen(cmd->line_split[0]))
+	{
+		if (ft_unset(cmd->line_split[1], cmd) == 1)
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
