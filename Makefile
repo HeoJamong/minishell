@@ -6,7 +6,8 @@ SRC =	main.c \
 		mini_signal.c \
 		mini_utils.c \
 		env.c \
-		unset.c
+		unset.c \
+		atol.c
 
 OBJ =	$(SRC:.c=.o)
 
