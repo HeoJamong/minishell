@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/13 19:35:56 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/09/14 18:30:08 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,13 @@ typedef struct	s_term
 }	t_term;
 typedef	struct	s_cmd
 {
-	int				line_i;
-	char			*line;
-	char			**line_split;
-	char			**envp;
-	struct s_term	term;
+	int					process_status; //"$?"를 구현하기위해 만든 변수
+	int					line_i;
+	char				*line;
+	char				**line_split;
+	char				**envp;
+	struct s_term		term;
+	struct s_pipe_lst	*pipe_lst;	
 }	t_cmd;
 typedef struct	s_env_var
 {
@@ -46,15 +48,23 @@ typedef struct	s_env_var
 	int		len;
 	int		n;
 }	t_env_var;
+typedef struct	s_pipe_lst
+{
+	char				**line_pipesplit;
+	struct s_pipe_lst	*next;
+}	t_pipe_lst;
 
-void	ms_line_replace_env(t_cmd *cmd, char **ptr, char *line);
-void	ms_term_set(t_cmd *cmd);
-void	ms_term_reset(t_cmd *cmd);
-char	*ft_envchr(char *env, char *str);
-char	*ft_realloc(char *ptr, int size);
-char	**set_env(char **envp);
-void	print_env(char **env);
-int		ft_export(char *str, t_cmd *cmd);
-int		ft_unset(char *str, t_cmd *cmd);
+void		ms_line_replace_env(t_cmd *cmd, char **ptr, char *line);
+void		ms_term_set(t_cmd *cmd);
+void		ms_term_reset(t_cmd *cmd);
+char		*ft_envchr(char *env, char *str);
+char		*ft_realloc(char *ptr, int size);
+char		**set_env(char **envp);
+void		print_env(char **env);
+int			ft_export(char *str, t_cmd *cmd);
+int			ft_unset(char *str, t_cmd *cmd);
+t_pipe_lst	*mini_lstnew(void);
+t_pipe_lst	*mini_lstlast(t_pipe_lst *lst);
+void		mini_lstadd_back(t_pipe_lst **pipe_lst, t_pipe_lst *new);
 
 #endif

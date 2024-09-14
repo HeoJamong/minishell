@@ -7,7 +7,8 @@ SRC =	main.c \
 		mini_utils.c \
 		mini_env.c \
 		mini_unset.c \
-		mini_replace_env.c
+		mini_replace_env.c \
+		mini_lst.c
 
 OBJ =	$(SRC:.c=.o)
 

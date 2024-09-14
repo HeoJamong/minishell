@@ -76,12 +76,14 @@ char	*ms_line_tokenizing_str(t_cmd *cmd, char *line, int *i)
 	return (ptr);
 }
 
-void	ms_line_tokenizer(t_cmd *cmd, char *line)
+int	ms_line_tokenizer(t_cmd *cmd, char *line)
 {
 	int		i = 0;
 	int		line_i = 0;
 	char	*tmp;
 
+	if (*line == 0)
+		return (-1);
 	cmd->line_split = (char **)malloc(sizeof(char *) * (ft_strlen(line) + 1));
 	if (cmd->line_split == NULL)
 		exit (EXIT_FAILURE);
@@ -107,7 +109,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 						while (cmd->line_split[i])
 							free(cmd->line_split[i++]);
 						free(cmd->line_split);
-						return ;
+						return (-1);
 					}
 				}
 				else
@@ -161,7 +163,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 						while (cmd->line_split[i])
 							free(cmd->line_split[i++]);
 						free(cmd->line_split);
-						return ;
+						return (-1);
 					}
 				}
 				else
@@ -180,14 +182,17 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	i = 0;
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
+	return (0);
 }
 
 void	ms_builtin_func(t_cmd *cmd)
 {
 	int		dir;
 	char	*tmp;
+	char	*command;
 
-	if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
+	command = cmd->line_split[0];
+	if (ft_strnstr(command, "cd", 2) && ft_strlen(command) == 2)
 	{
 		if (cmd->line_i > 2)
 			printf("minishell: cd: too many arguments\n");
@@ -232,7 +237,7 @@ void	ms_builtin_func(t_cmd *cmd)
 			free(tmp);
 		}
 	}
-	else if (ft_strnstr(cmd->line_split[0], "pwd", 3) && ft_strlen(cmd->line_split[0]) == 3)
+	else if (ft_strnstr(command, "pwd", 3) && ft_strlen(command) == 3)
 	{
 		char	*currdir;
 
@@ -242,7 +247,7 @@ void	ms_builtin_func(t_cmd *cmd)
 		printf("%s\n", currdir);
 		free(currdir);
 	}
-	else if (ft_strnstr(cmd->line_split[0], "echo", 4) && ft_strlen(cmd->line_split[0]) == 4)
+	else if (ft_strnstr(command, "echo", 4) && ft_strlen(command) == 4)
 	{
 		int	i = 1;
 
@@ -260,21 +265,21 @@ void	ms_builtin_func(t_cmd *cmd)
 			printf("%s\n", cmd->line_split[i]);
 		}
 	}
-	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
+	else if (ft_strnstr(command, "export", 6) && ft_strlen(command) == 6)
 	{
 		if (ft_export(cmd->line_split[1], cmd) == 1)	
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
-	else if (ft_strnstr(cmd->line_split[0], "unset", 5) && ft_strlen(cmd->line_split[0]))
+	else if (ft_strnstr(command, "unset", 5) && ft_strlen(command))
 	{
 		if (ft_unset(cmd->line_split[1], cmd) == 1)
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
-	else if (ft_strnstr(cmd->line_split[0], "env",3))
+	else if (ft_strnstr(command, "env",3) && ft_strlen(command) == 3)
 		print_env(cmd->envp);
-	else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
+	else if (ft_strnstr(command, "exit", 4) && ft_strlen(command) == 4)
 	{
 		printf("exit\n");
 		if (cmd->line_i == 1)
@@ -284,13 +289,94 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 
 }
+int	ms_line_pipesplit(t_cmd *cmd)
+{
+	t_pipe_lst	*tmp;
+	// t_pipe_lst	*pipe_tmp;
+	int			i;
+	int			k;
+
+	i = 0;
+	k = 0;
+	cmd->pipe_lst = mini_lstnew();	// 일단 새로운 구조체 리스트 할당
+	tmp = cmd->pipe_lst;
+	tmp->line_pipesplit = (char **)malloc(sizeof(char *) * (cmd->line_i + 1));	//할당된 구조체에 2차원 배열 할당후 안에 들어갈 값 넣기
+	if (tmp->line_pipesplit == NULL)
+		exit (EXIT_FAILURE);
+	while(i < cmd->line_i)
+	{
+		tmp->line_pipesplit[k++] = cmd->line_split[i++];
+		if (cmd->line_split[i] == NULL)
+			break ;
+		if (ft_strnstr(cmd->line_split[i], "|", 1) && ft_strlen(cmd->line_split[i]) == 1)
+		{
+			tmp->line_pipesplit[k] = NULL;
+			k = 0;
+			mini_lstadd_back(&(cmd->pipe_lst), mini_lstnew());
+			tmp = tmp->next;
+			tmp->line_pipesplit = (char **)malloc(sizeof(char *) * cmd->line_i);
+			if (tmp->line_pipesplit == NULL)
+				exit (EXIT_FAILURE);
+			i++;
+			// if (ft_strnstr(cmd->line_split[i], "|", 1) && ft_strlen(cmd->line_split[i]) == 1)
+			// {
+			// 	tmp = cmd->pipe_lst;
+			// 	while (tmp->next)
+			// 	{
+			// 		pipe_tmp = tmp;
+			// 		tmp = tmp->next;
+			// 		free(pipe_tmp->line_pipesplit);
+			// 		free(pipe_tmp);
+			// 	}
+			// 	return (-1);
+			// }
+		}
+		tmp->line_pipesplit[k] = NULL;
+	}
+	
+	k = 0;
+	tmp = cmd->pipe_lst;
+	// while (tmp)
+	// {
+	// 	i = 0;
+	// 	while (tmp->line_pipesplit[i])
+	// 	{
+	// 		printf("%d: %s\n", k, tmp->line_pipesplit[i]);
+	// 		i++;
+	// 	}
+	// 	k++;
+	// 	tmp = tmp->next;
+	// }
+	return (0);
+}
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	ms_line_tokenizer(cmd, cmd->line);	
+	if (ms_line_tokenizer(cmd, cmd->line) == -1)
+		return ;
+	if (ms_line_pipesplit(cmd) == -1)
+	{
+		int	i = 0;
+		while (cmd->line_split[i])
+			free(cmd->line_split[i++]);
+		free(cmd->line_split);
+		return ;
+	}
 	ms_builtin_func(cmd);
 
-	int	i = 0;
+
+	t_pipe_lst	*tmp;
+	t_pipe_lst	*pipe_tmp;
+	int			i = 0;
+
+	tmp = cmd->pipe_lst;
+	while (tmp->next)
+	{
+		free(tmp->line_pipesplit);
+		pipe_tmp = tmp;
+		tmp = tmp->next;
+		free(pipe_tmp);
+	}
 	while (cmd->line_split[i])
 		free(cmd->line_split[i++]);
 	free(cmd->line_split);
@@ -298,7 +384,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 
 int	main(int ac, char **av, char **envp)
 {
-	t_cmd	cmd;
+	t_cmd		cmd;
 
 	(void)av;
 	if (ac != 1)
