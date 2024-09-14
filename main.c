@@ -12,6 +12,42 @@
 
 #include "minishell.h"
 
+int	exit_num_isdigit(char *num, int *flag)
+{
+	int	i;
+	i = 0;
+	
+	if (num[i] == '-')
+	{
+		*flag = 1;
+		i++;
+	}
+	while (num[i])
+	{
+		if (ft_isdigit(num[i]) == 0)
+				return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	max_exit_num_check(char num, int i)
+{
+	const char	*max_exit_num = "9223372036854775807";
+
+	if (num > max_exit_num[i])
+		return (1);
+	return (0);
+}
+
+int	min_exit_num_check(char num, int i)
+{
+	const char	*min_exit_num = "-9223372036854775808";
+	if (num > min_exit_num[i])
+		return (1);
+	return (0);
+}
+
 static void	replace_env_find(t_cmd *cmd, char **ptr, char *line, int *n)
 {
 	char	*tmp;
@@ -337,8 +373,53 @@ void	ms_builtin_func(t_cmd *cmd)
 	else if (ft_strnstr(cmd->line_split[0], "exit", 4) && ft_strlen(cmd->line_split[0]) == 4)
 	{
 		printf("exit\n");
+		int i = 0;
+		int	flag;
+		int	exit_num_check;
+
+		flag = 0;
 		if (cmd->line_i == 1)
 			exit(EXIT_SUCCESS);
+		else if (cmd->line_i == 2)
+		{
+			printf("호출 됐나요?\n");
+			if (exit_num_isdigit(cmd->line_split[1], &flag) == 0)
+				printf("숫자 아님\n");
+			else
+			{
+				if (flag == 0 && strlen(cmd->line_split[1]) == 19)
+				{
+					while (cmd->line_split[1][i])
+					{
+						exit_num_check = max_exit_num_check(cmd->line_split[1][i], i);
+						if (exit_num_check == 1)
+							break;
+						i++;
+					}
+					if (exit_num_check == 0)
+						printf("exit: %lld\n", ft_atol(cmd->line_split[1]));
+					else
+						printf("올바른 값이 아님\n");
+				}
+				else if (flag == 1 && strlen(cmd->line_split[1]) == 20)
+				{
+					while (cmd->line_split[1][i])
+					{
+						exit_num_check = min_exit_num_check(cmd->line_split[1][i], i);
+						if (exit_num_check == 1)
+							break;
+						i++;
+					}
+					if (exit_num_check == 0)
+						printf("exit: %lld\n", ft_atol(cmd->line_split[1]));
+					else
+						printf("올바른 값이 아님\n");
+				}
+				else if ((flag == 0 && strlen(cmd->line_split[1]) < 19 && strlen(cmd->line_split[1]) > 0) \
+				|| (flag == 1 && strlen(cmd->line_split[1]) < 20 && strlen(cmd->line_split[1]) > 0))
+					printf("exit: %lld\n",ft_atol(cmd->line_split[1]));
+			}
+		}
 		else
 			printf("minishell: exit: too many arguments\n");
 	}

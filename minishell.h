@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/11 14:06:53 by jheo             ###   ########.fr       */
+/*   Updated: 2024/09/14 19:57:26 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,13 @@ typedef struct	s_env_var
 	int		n;
 }	t_env_var;
 
-void	ms_term_set(t_cmd *cmd);
-void	ms_term_reset(t_cmd *cmd);
-char	*ft_envchr(char *env, char *str);
-char	*ft_realloc(char *ptr, int size);
-char	**set_env(char **envp);
-int		ft_export(char *str, t_cmd *cmd);
-void	print_env(char **env);
-int		ft_unset(char *str, t_cmd *cmd);
+void		ms_term_set(t_cmd *cmd);
+void		ms_term_reset(t_cmd *cmd);
+char		*ft_envchr(char *env, char *str);
+char		*ft_realloc(char *ptr, int size);
+char		**set_env(char **envp);
+int			ft_export(char *str, t_cmd *cmd);
+void		print_env(char **env);
+int			ft_unset(char *str, t_cmd *cmd);
+long long	ft_atol(const char *string);
 #endif
