@@ -195,11 +195,13 @@ void	ms_builtin_func(t_cmd *cmd)
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	ms_line_tokenizer(cmd, cmd->line);
 	int i = 0;
+	
+	ms_line_tokenizer(cmd, cmd->line);
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
 	ms_builtin_func(cmd);
+	
 
 	i = 0;
 	while (cmd->line_split[i])
