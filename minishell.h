@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/14 19:57:26 by jheo             ###   ########.fr       */
+/*   Updated: 2024/10/28 16:39:38 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,23 @@ typedef struct	s_env_var
 	int		n;
 }	t_env_var;
 
+// util_func
+long long	ft_atol(const char *string);
+char		*ft_realloc(char *ptr, int size);
+
 void		ms_term_set(t_cmd *cmd);
 void		ms_term_reset(t_cmd *cmd);
+
+// env_func
 char		*ft_envchr(char *env, char *str);
-char		*ft_realloc(char *ptr, int size);
 char		**set_env(char **envp);
-int			ft_export(char *str, t_cmd *cmd);
 void		print_env(char **env);
+void		ms_line_replace_env(t_cmd *cmd, char **ptr, char *line);
+
+int			ft_export(char *str, t_cmd *cmd);
 int			ft_unset(char *str, t_cmd *cmd);
-long long	ft_atol(const char *string);
+
+char		*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i);
+char		*ms_line_tokenizing_str(t_cmd *cmd, char *line, int *i);
+
 #endif

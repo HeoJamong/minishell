@@ -5,9 +5,9 @@ NAME =	minishell
 SRC =	main.c \
 		mini_signal.c \
 		mini_utils.c \
+		replace_env.c \
 		env.c \
 		unset.c \
-		atol.c
 
 OBJ =	$(SRC:.c=.o)
 
