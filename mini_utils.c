@@ -6,11 +6,21 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/09 17:20:42 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:49:22 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "minishell.h"
+
+void	line_split_free(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->line_split[i])
+		free(cmd->line_split[i++]);
+	free(cmd->line_split);
+}
 
 char	*ft_envchr(char *env, char *str)
 {
@@ -39,4 +49,30 @@ char	*ft_realloc(char *ptr, int size)
 	ft_strlcpy(tmp, ptr, ft_strlen(ptr) + 1);
 	free(ptr);
 	return (tmp);
+}
+
+long long	ft_atol(const char *string)
+{
+	int			minus;
+	int			i;
+	long long	c;
+
+	minus = 1;
+	i = 0;
+	c = 0;
+	while ((9 <= string[i] && string[i] <= 13) || string[i] == 32)
+		i++;
+	if (string[i] == '-' || string[i] == '+')
+	{
+		if (string[i] == '-')
+			minus *= -1;
+		i++;
+	}
+	while ('0' <= string[i] && string[i] <= '9')
+	{
+		c *= 10;
+		c = c + (string[i] - '0');
+		i++;
+	}
+	return ((minus * c) % 256);
 }
