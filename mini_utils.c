@@ -6,11 +6,11 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 19:49:22 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/28 21:03:13 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
 void	line_split_free(t_cmd *cmd)
 {

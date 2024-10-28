@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 20:14:59 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/28 21:02:01 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 typedef struct	s_term
 {
 	struct termios	current_term;
-	struct termios	alter_term;
+	struct termios	change_term;
 }	t_term;
 typedef	struct	s_cmd
 {

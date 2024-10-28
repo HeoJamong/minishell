@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini_signal.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/28 20:58:33 by jinsecho          #+#    #+#             */
+/*   Updated: 2024/10/28 21:02:39 by jinsecho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	alter_signal_handler(int signum)
+void	change_signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
@@ -20,10 +32,10 @@ void	alter_signal_handler(int signum)
 	}
 }
 
-static void	ms_alter_signal(void)
+static void	ms_change_signal(void)
 {
-	signal(SIGINT, alter_signal_handler);
-	signal(SIGQUIT, alter_signal_handler);
+	signal(SIGINT, change_signal_handler);
+	signal(SIGQUIT, change_signal_handler);
 }
 
 static void	ms_current_signal(void)
@@ -35,10 +47,10 @@ static void	ms_current_signal(void)
 void	ms_term_set(t_cmd *cmd)
 {
 	tcgetattr(0, &cmd->term.current_term);
-	tcgetattr(0, &cmd->term.alter_term);
-	cmd->term.alter_term.c_lflag &= ~512;
-	ms_alter_signal();
-	tcsetattr(0, TCSANOW, &cmd->term.alter_term);
+	tcgetattr(0, &cmd->term.change_term);
+	cmd->term.change_term.c_lflag &= ~512;
+	ms_change_signal();
+	tcsetattr(0, TCSANOW, &cmd->term.change_term);
 }
 
 void	ms_term_reset(t_cmd *cmd)
