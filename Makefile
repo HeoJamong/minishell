@@ -7,7 +7,8 @@ SRC =	main.c \
 		mini_signal.c \
 		replace_env.c \
 		env.c \
-		ms_line_tokenizing.c \
+		ms_line_token.c \
+		ms_line_token_utils.c \
 		unset.c
 
 OBJ =	$(SRC:.c=.o)
