@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 16:39:38 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:51:06 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,9 @@ typedef struct	s_env_var
 }	t_env_var;
 
 // util_func
-long long	ft_atol(const char *string);
 char		*ft_realloc(char *ptr, int size);
+void		line_split_free(t_cmd *cmd);
+long long	ft_atol(const char *string);
 
 void		ms_term_set(t_cmd *cmd);
 void		ms_term_reset(t_cmd *cmd);
