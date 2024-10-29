@@ -6,11 +6,18 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:56:11 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 20:01:00 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:38:28 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	line_token_var_init(t_cmd *cmd, int *i, int *line_i)
+{
+	*i = 0;
+	*line_i = 0;
+	cmd->pipe_true = 0;
+}
 
 void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
 {
@@ -100,8 +107,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	int	i;
 	int	line_i;
 
-	i = 0;
-	line_i = 0;
+	line_token_var_init(cmd, &i, &line_i);
 	cmd->line_split = (char **)malloc(sizeof(char *) * (ft_strlen(line) + 1));
 	if (cmd->line_split == NULL)
 		exit (EXIT_FAILURE);
@@ -113,7 +119,10 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 		else if (line[i] == DOUBLE_QUOTE || line[i] == SINGLE_QUOTE)
 			line_token_quote(cmd, line, &line_i, &i);
 		else if (line[i] == '|')
+		{
 			cmd->line_split[line_i++] = ms_line_tokenizing_str(cmd, line, &i);
+			cmd->pipe_true = 1;
+		}
 		else if (line[i] == '>' || line[i] == '<')
 			line_token_redirect(cmd, line, &line_i, &i);
 		else
