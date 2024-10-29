@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/29 15:03:31 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/29 15:44:07 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,9 @@ int			ft_unset(char *str, t_cmd *cmd);
 char	*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i);
 char	*ms_line_tokenizing_str(t_cmd *cmd, char *line, int *i);
 void	ms_line_tokenizer(t_cmd *cmd, char *line);
+void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i);
+void	line_token_redirect(t_cmd *cmd, char *line, int *line_i, int *i);
+void	line_token_str(t_cmd *cmd, char *line, int *line_i, int *i);
 
 // pipe_linked_lst
 t_plst	*ms_lstnew(void);

@@ -9,8 +9,9 @@ SRC =	main.c \
 		ms_replace_env.c \
 		ms_env.c \
 		ms_unset.c \
-		ms_line_token.c \
-		ms_line_token_utils.c \
+		ms_line_token1.c \
+		ms_line_token2.c \
+		ms_line_token_utils.c
 
 OBJ =	$(SRC:.c=.o)
 
