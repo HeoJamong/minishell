@@ -3,13 +3,15 @@ CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 NAME =	minishell
 SRC =	main.c \
-		mini_utils.c \
-		mini_signal.c \
-		replace_env.c \
-		env.c \
-		ms_line_token.c \
-		ms_line_token_utils.c \
-		unset.c
+		ms_lst.c \
+		ms_utils.c \
+		ms_signal.c \
+		ms_replace_env.c \
+		ms_env.c \
+		ms_unset.c \
+		ms_line_token1.c \
+		ms_line_token2.c \
+		ms_line_token_utils.c
 
 OBJ =	$(SRC:.c=.o)
 

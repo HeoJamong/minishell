@@ -193,6 +193,54 @@ void	ms_builtin_func(t_cmd *cmd)
 		print_env(cmd->envp);
 }
 
+int	ms_line_pipe_split(t_cmd *cmd)
+{
+	t_plst	*tmp;
+	t_plst	*pipe_tmp;
+	int		i = 0;
+	int		k = 0;
+
+	cmd->pipe_lst = ms_lstnew();
+	tmp = cmd->pipe_lst;
+	tmp->pipe_split = (char **)malloc(sizeof(char *) * (cmd->line_i + 1));
+	if (tmp->pipe_split == NULL)
+		exit (EXIT_FAILURE);
+	while(i < cmd->line_i)
+	{
+		tmp->pipe_split[k++] = cmd->line_split[i++];
+		if (cmd->line_split[i] == NULL)
+		{
+			tmp->pipe_split[k] = NULL;
+			break ;
+		}
+		if (ft_strnstr(cmd->line_split[i], "|", 1))
+		{
+			tmp->pipe_split[k] = NULL;
+			k = 0;
+			ms_lstadd_back(&(cmd->pipe_lst), ms_lstnew());
+			tmp = tmp->next;
+			tmp->pipe_split = (char **)malloc(sizeof(char *) * cmd->line_i);
+			if (tmp->pipe_split == NULL)
+				exit (EXIT_FAILURE);
+			i++;
+			if (ft_strnstr(cmd->line_split[i], "|", 1))
+			{
+				tmp = cmd->pipe_lst;
+				while (tmp->next)
+				{
+					pipe_tmp = tmp;
+					free(tmp->pipe_split);
+					free(pipe_tmp);
+					tmp = tmp->next;
+				}
+				return (1);
+			}
+		}
+		tmp->pipe_split[k] = NULL;
+	}
+	return (0);
+}
+
 void	ms_line_str_parsing(t_cmd *cmd)
 {
 	int i = 0;
@@ -200,13 +248,10 @@ void	ms_line_str_parsing(t_cmd *cmd)
 	ms_line_tokenizer(cmd, cmd->line);
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
+	if (cmd->pipe_true)
+		ms_line_pipe_split(cmd);
 	ms_builtin_func(cmd);
-	
-
-	i = 0;
-	while (cmd->line_split[i])
-		free(cmd->line_split[i++]);
-	free(cmd->line_split);
+	line_split_free(cmd);
 }
 
 int	main(int ac, char **av, char **envp)
