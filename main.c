@@ -227,11 +227,11 @@ int	ms_line_pipe_split(t_cmd *cmd)
 			{
 				tmp = cmd->pipe_lst;
 				while (tmp->next)
-				{
+				{	
 					pipe_tmp = tmp;
-					free(tmp->pipe_split);
-					free(pipe_tmp);
 					tmp = tmp->next;
+					free(pipe_tmp->pipe_split);
+					free(pipe_tmp);
 				}
 				return (1);
 			}
@@ -244,14 +244,36 @@ int	ms_line_pipe_split(t_cmd *cmd)
 void	ms_line_str_parsing(t_cmd *cmd)
 {
 	int i = 0;
+	t_plst	*tmp;
+	t_plst	*pipe_tmp;
 	
 	ms_line_tokenizer(cmd, cmd->line);
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
-	if (cmd->pipe_true)
-		ms_line_pipe_split(cmd);
+	if (ms_line_pipe_split(cmd))
+	{
+		line_split_free(cmd);
+		return ;
+	}
+	tmp = ms_lstlast(cmd->pipe_lst);
+	while (tmp)
+	{
+		i = 0;
+		while (tmp->pipe_split[i])
+			printf("%s ", tmp->pipe_split[i++]);
+		printf("\n");
+		tmp = tmp->prev;
+	}
 	ms_builtin_func(cmd);
 	line_split_free(cmd);
+	tmp = cmd->pipe_lst;
+	while (tmp)
+	{
+		pipe_tmp = tmp;
+		tmp = tmp->next;
+		free(pipe_tmp->pipe_split);
+		free(pipe_tmp);
+	}
 }
 
 int	main(int ac, char **av, char **envp)
