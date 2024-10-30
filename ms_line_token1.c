@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:56:11 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/30 14:23:52 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:48:49 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
 		else
 			tmp = ms_line_tokenizing_str(cmd, line, i);
 		cmd->line_split[*line_i] = ft_strjoin(cmd->line_split[*line_i], tmp);
+		free(tmp);
 	}
 	(*line_i)++;
 }
