@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 22:09:49 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 23:30:05 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:33:33 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_plst	*ms_lstnew(void)
 	ptr = (t_plst *)malloc(sizeof(t_plst));
 	if (ptr == NULL)
 		exit (EXIT_FAILURE);
+	ptr->prev = NULL;
 	ptr->next = NULL;
 	return (ptr);
 }
@@ -46,4 +47,5 @@ void	ms_lstadd_back(t_plst **lst, t_plst *new)
 	tmp = ms_lstlast(*lst);
 	new->next = NULL;
 	tmp->next = new;
+	new->prev = tmp;
 }

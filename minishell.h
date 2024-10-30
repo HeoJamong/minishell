@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/29 15:44:07 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:53:59 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ typedef struct	s_term
 typedef struct	s_plst
 {
 	char			**pipe_split;
+	struct s_plst	*prev;
 	struct s_plst	*next;
 }	t_plst;
 typedef	struct	s_cmd
 {
 	int				process_status; // "$?"를 구현하기위해 만든 변수
 	int				line_i;
-	int				pipe_true;
 	char			*line;
 	char			**line_split;
 	char			**envp;
