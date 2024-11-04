@@ -200,6 +200,8 @@ int	ms_line_pipe_split(t_cmd *cmd)
 	int		i = 0;
 	int		k = 0;
 
+	if (cmd->line_split[i] == NULL)
+		return (1);
 	cmd->pipe_lst = ms_lstnew();
 	tmp = cmd->pipe_lst;
 	tmp->pipe_split = (char **)malloc(sizeof(char *) * (cmd->line_i + 1));
