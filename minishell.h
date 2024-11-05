@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/29 15:44:07 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/04 18:40:41 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,7 @@ t_plst	*ms_lstnew(void);
 t_plst	*ms_lstlast(t_plst *lst);
 void	ms_lstadd_back(t_plst **lst, t_plst *new);
 
+//redirections
+int	input_redirect(char *str);
+int	output_redirect(char *str);
 #endif

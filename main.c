@@ -16,7 +16,7 @@ int	exit_num_isdigit(char *num, int *flag)
 {
 	int	i;
 	i = 0;
-	
+
 	if (num[i] == '-')
 	{
 		*flag = 1;
@@ -179,7 +179,7 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
 	{
-		if (ft_export(cmd->line_split[1], cmd) == 1)	
+		if (ft_export(cmd->line_split[1], cmd) == 1)
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
@@ -191,6 +191,16 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "env",3))
 		print_env(cmd->envp);
+	else if (ft_strnstr(cmd->line_split[0], "<", 1))
+	{
+		if (input_redirect(cmd->line_split[1]))
+			printf("gooood\n");
+	}
+	else if (ft_strnstr(cmd->line_split[0], ">", 1))
+	{
+		if (output_redirect(cmd->line_split[1]))
+			printf("niceeeeeeeee\n");
+	}
 }
 
 int	ms_line_pipe_split(t_cmd *cmd)
@@ -244,7 +254,7 @@ int	ms_line_pipe_split(t_cmd *cmd)
 void	ms_line_str_parsing(t_cmd *cmd)
 {
 	int i = 0;
-	
+
 	ms_line_tokenizer(cmd, cmd->line);
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
