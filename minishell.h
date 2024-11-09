@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/30 13:53:59 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:10:22 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,20 @@ typedef struct	s_plst
 	struct s_plst	*prev;
 	struct s_plst	*next;
 }	t_plst;
-typedef	struct	s_cmd
+typedef struct	s_sts
 {
 	int				process_status; // "$?"를 구현하기위해 만든 변수
+	int				pipe_true;
+	int				heredoc_true;
+}	t_sts;
+
+typedef	struct	s_cmd
+{
 	int				line_i;
 	char			*line;
 	char			**line_split;
 	char			**envp;
+	struct s_sts	sts;
 	struct s_term	term;
 	struct s_plst	*pipe_lst;
 }	t_cmd;
@@ -54,10 +61,15 @@ typedef struct	s_env_var
 	int		len;
 	int		n;
 }	t_env_var;
+typedef struct	s_idx
+{
+	int	i;
+	int	k;
+}	t_idx;
 
 // util_func
 char		*ft_realloc(char *ptr, int size);
-void		line_split_free(t_cmd *cmd);
+void		ft_line_split_free(t_cmd *cmd);
 long long	ft_atol(const char *string);
 
 // term_set

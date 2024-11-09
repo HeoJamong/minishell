@@ -220,37 +220,124 @@ static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
 	return (0);
 }
 
+void	ms_idx_init(t_idx *idx)
+{
+	idx->i = 0;
+	idx->k = 0;
+}
+
 int	ms_line_pipe_split(t_cmd *cmd)
 {
 	t_plst	*tmp;
-	int		i;
-	int		k;
+	t_idx	idx;
 
-	i = 0;
-	k = 0;
-	if (cmd->line_split[i] == NULL)
+	ms_idx_init(&idx);
+	if (cmd->line_split[idx.i] == NULL)
 		return (1);
 	cmd->pipe_lst = ms_lstnew();
 	tmp = cmd->pipe_lst;
 	tmp->pipe_split = (char **)malloc(sizeof(char *) * (cmd->line_i + 1));
 	if (tmp->pipe_split == NULL)
 		exit (EXIT_FAILURE);
-	while(i < cmd->line_i)
+	while(idx.i < cmd->line_i)
 	{
-		tmp->pipe_split[k++] = cmd->line_split[i++];
-		if (cmd->line_split[i] == NULL)
+		tmp->pipe_split[(idx.k)++] = cmd->line_split[(idx.i)++];
+		if (cmd->line_split[idx.i] == NULL)
 		{
-			tmp->pipe_split[k] = NULL;
+			tmp->pipe_split[idx.k] = NULL;
 			break ;
 		}
-		if (ft_strnstr(cmd->line_split[i], "|", 1))
+		if (ft_strnstr(cmd->line_split[idx.i], "|", 1))
 		{
-			if (line_pipe_split_find(cmd, &tmp, &i, &k))
+			cmd->sts.pipe_true = 1;
+			if (line_pipe_split_find(cmd, &tmp, &idx.i, &idx.k))
 				return (1);
 		}
-		tmp->pipe_split[k] = NULL;
+		tmp->pipe_split[idx.k] = NULL;
 	}
 	return (0);
+}
+
+void	ms_proc_exec(t_cmd *cmd, char *file, int sts)
+{
+	char	*path_split;
+	char	*path;
+	int		pid;
+	int		i = 0;
+	int		executable = 0;
+
+	if (ft_strchr(file, '/'))
+	{
+		if (access(file, X_OK) == 0)
+			executable = 1;
+	}
+	else
+	{
+		while (cmd->envp[i])
+		{
+			path = ft_envchr(cmd->envp[i++], "PATH");
+			if (path)
+			{
+				path += 5;
+				break ;
+			}
+		}
+		path_split = ft_split(path, ':');
+		if (path_split == NULL)
+		{
+			printf("minishell: %s: No such file or directory\n", file);
+			exit (EXIT_FAILURE);
+		}
+		while (path_split[i])
+		{
+			path_split[i] = ft_strjoin(path_split[i], "/");
+			path_split[i] = ft_strjoin(path_split[i], file);
+			if (access(path_split[i], X_OK) == 0)
+			{
+				executable = 1;
+				break ;
+			}
+			i++;
+		}
+	}
+	if (executable == 1)
+	{
+		pid = (int)fork();
+		if (pid == -1)
+			exit (EXIT_FAILURE);
+		if (pid == 0)
+		{
+			
+		}
+	}
+}
+
+int	ms_cmd_exec(t_cmd *cmd)
+{
+	t_plst	*tmp;
+	int		fd[2];
+
+	tmp = cmd->pipe_lst;
+	if (cmd->sts.pipe_true == 0)
+	{
+		ms_builtin_func(cmd);
+		ms_fork_exec(cmd);
+	}
+	else
+	{	
+		if (pipe(fd) == -1);
+			exit (EXIT_FAILURE);
+		while (tmp)
+		{
+			if (tmp == cmd->pipe_lst)
+				ms_proc_exec(cmd, tmp->pipe_split[0], 0);
+			else if (tmp->next == NULL)
+				ms_proc_exec(cmd, tmp->pipe_split[0], 1);
+			else
+				ms_proc_exec(cmd, tmp->pipe_split[0], 2);
+			tmp = tmp->next;
+		}
+	}
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
@@ -260,24 +347,22 @@ void	ms_line_str_parsing(t_cmd *cmd)
 	t_plst	*pipe_tmp;
 	
 	ms_line_tokenizer(cmd, cmd->line);
-	while(cmd->line_split[i])
-		printf("check:%s\n", cmd->line_split[i++]);
 	if (ms_line_pipe_split(cmd))
 	{
-		line_split_free(cmd);
+		ft_line_split_free(cmd);
 		return ;
 	}
-	tmp = ms_lstlast(cmd->pipe_lst);
+	tmp = cmd->pipe_lst;
 	while (tmp)
 	{
 		i = 0;
 		while (tmp->pipe_split[i])
 			printf("%s ", tmp->pipe_split[i++]);
 		printf("\n");
-		tmp = tmp->prev;
+		tmp = tmp->next;
 	}
-	ms_builtin_func(cmd);
-	line_split_free(cmd);
+	ms_cmd_exec(cmd);
+	ft_line_split_free(cmd);
 	tmp = cmd->pipe_lst;
 	while (tmp)
 	{
