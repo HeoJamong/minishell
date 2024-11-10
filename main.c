@@ -318,30 +318,30 @@ void	cmd_proc_exec(t_cmd *cmd, int sts)
 
 int	ms_cmd_exec(t_cmd *cmd)
 {
-	// t_plst	*tmp;
-	// int		fd[2];
+	t_plst	*tmp;
+	int		fd[2];
 
-	// tmp = cmd->pipe_lst;
+	tmp = cmd->pipe_lst;
 	if (cmd->sts.pipe_true == 0)
 	{
 		ms_builtin_func(cmd);
 		cmd_proc_exec(cmd, 0);
 	}
-	// else
-	// {	
-	// 	if (pipe(fd) == -1);
-	// 		exit (EXIT_FAILURE);
-	// 	while (tmp)
-	// 	{
-	// 		if (tmp == cmd->pipe_lst)
-	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 0);
-	// 		else if (tmp->next == NULL)
-	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 1);
-	// 		else
-	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 2);
-	// 		tmp = tmp->next;
-	// 	}
-	// }
+	else
+	{	
+		if (pipe(fd) == -1);
+			exit (EXIT_FAILURE);
+		while (tmp)
+		{
+			if (tmp == cmd->pipe_lst)
+				cmd_proc_exec(cmd, 0);
+			else if (tmp->next == NULL)
+				cmd_proc_exec(cmd, 1);
+			else
+				cmd_proc_exec(cmd, 2);
+			tmp = tmp->next;
+		}
+	}
 	return (0);
 }
 
