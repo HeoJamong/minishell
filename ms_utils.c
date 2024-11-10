@@ -6,20 +6,20 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/07 13:06:58 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/09 21:47:09 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_line_split_free(t_cmd *cmd)
+void	ft_line_split_free(char **tmp)
 {
 	int	i;
 
 	i = 0;
-	while (cmd->line_split[i])
-		free(cmd->line_split[i++]);
-	free(cmd->line_split);
+	while (tmp[i])
+		free(tmp[i++]);
+	free(tmp);
 }
 
 char	*ft_envchr(char *env, char *str)

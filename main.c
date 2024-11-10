@@ -258,86 +258,91 @@ int	ms_line_pipe_split(t_cmd *cmd)
 	return (0);
 }
 
-void	ms_proc_exec(t_cmd *cmd, char *file, int sts)
+void	cmd_proc_exec(t_cmd *cmd, int sts)
 {
-	char	*path_split;
+	char	**path_split;
 	char	*path;
 	int		pid;
 	int		i = 0;
 	int		executable = 0;
 
-	if (ft_strchr(file, '/'))
+	(void)sts;
+	pid = (int)fork();
+	if (pid == -1)
+		exit (EXIT_FAILURE);
+	if (pid == 0)
 	{
-		if (access(file, X_OK) == 0)
-			executable = 1;
-	}
-	else
-	{
-		while (cmd->envp[i])
+		if (ft_strchr(cmd->pipe_lst->pipe_split[0], '/'))
 		{
-			path = ft_envchr(cmd->envp[i++], "PATH");
-			if (path)
-			{
-				path += 5;
-				break ;
-			}
-		}
-		path_split = ft_split(path, ':');
-		if (path_split == NULL)
-		{
-			printf("minishell: %s: No such file or directory\n", file);
-			exit (EXIT_FAILURE);
-		}
-		while (path_split[i])
-		{
-			path_split[i] = ft_strjoin(path_split[i], "/");
-			path_split[i] = ft_strjoin(path_split[i], file);
-			if (access(path_split[i], X_OK) == 0)
-			{
+			if (access(cmd->pipe_lst->pipe_split[0], X_OK) == 0)
 				executable = 1;
-				break ;
-			}
-			i++;
 		}
-	}
-	if (executable == 1)
-	{
-		pid = (int)fork();
-		if (pid == -1)
-			exit (EXIT_FAILURE);
-		if (pid == 0)
+		else
 		{
-			
+			while (cmd->envp[i])
+			{
+				path = ft_envchr(cmd->envp[i++], "PATH");
+				if (path)
+				{
+					path += 5;
+					break ;
+				}
+			}
+			if (path == NULL) // 환경변수에 path가 없을 때 처리
+				printf("minishell: %s: No such file or directory\n", cmd->pipe_lst->pipe_split[0]);
+			path_split = ft_split(path, ':');
+			i = 0;
+			while (path_split[i])
+			{
+				path_split[i] = ft_strjoin(path_split[i], "/");
+				path_split[i] = ft_strjoin(path_split[i], cmd->pipe_lst->pipe_split[0]);
+				if (access(path_split[i], X_OK) == 0)
+				{
+					executable = 1;
+					break ;
+				}
+				i++;
+			}
+			free(cmd->pipe_lst->pipe_split[0]);
+			cmd->pipe_lst->pipe_split[0] = ft_strdup(path_split[i]);
+			ft_line_split_free(path_split);
 		}
+		if (executable == 0)
+			printf("minishell: %s: No such file or directory\n", cmd->pipe_lst->pipe_split[0]);
+		else
+			if (execve(cmd->pipe_lst->pipe_split[0], cmd->pipe_lst->pipe_split, cmd->envp) == -1)
+				exit (EXIT_FAILURE);
 	}
+	wait(NULL);
 }
 
 int	ms_cmd_exec(t_cmd *cmd)
 {
-	t_plst	*tmp;
-	int		fd[2];
+	// t_plst	*tmp;
+	// int		fd[2];
 
-	tmp = cmd->pipe_lst;
+	// tmp = cmd->pipe_lst;
 	if (cmd->sts.pipe_true == 0)
 	{
 		ms_builtin_func(cmd);
-		ms_fork_exec(cmd);
+		cmd_proc_exec(cmd, 0);
 	}
-	else
-	{	
-		if (pipe(fd) == -1);
-			exit (EXIT_FAILURE);
-		while (tmp)
-		{
-			if (tmp == cmd->pipe_lst)
-				ms_proc_exec(cmd, tmp->pipe_split[0], 0);
-			else if (tmp->next == NULL)
-				ms_proc_exec(cmd, tmp->pipe_split[0], 1);
-			else
-				ms_proc_exec(cmd, tmp->pipe_split[0], 2);
-			tmp = tmp->next;
-		}
-	}
+	// else
+	// {	
+	// 	if (pipe(fd) == -1);
+	// 		exit (EXIT_FAILURE);
+	// 	while (tmp)
+	// 	{
+	// 		if (tmp == cmd->pipe_lst)
+	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 0);
+	// 		else if (tmp->next == NULL)
+	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 1);
+	// 		else
+	// 			cmd_proc_exec(cmd, tmp->pipe_split[0], 2);
+	// 		tmp = tmp->next;
+	// 	}
+	// }
+	return (0);
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
@@ -349,7 +354,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 	ms_line_tokenizer(cmd, cmd->line);
 	if (ms_line_pipe_split(cmd))
 	{
-		ft_line_split_free(cmd);
+		ft_line_split_free(cmd->line_split);
 		return ;
 	}
 	tmp = cmd->pipe_lst;
@@ -362,7 +367,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		tmp = tmp->next;
 	}
 	ms_cmd_exec(cmd);
-	ft_line_split_free(cmd);
+	ft_line_split_free(cmd->line_split);
 	tmp = cmd->pipe_lst;
 	while (tmp)
 	{

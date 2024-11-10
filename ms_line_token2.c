@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:46:02 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/07 22:36:52 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/09 21:52:40 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	line_token_str(t_cmd *cmd, char *line, int *line_i, int *i)
 			if (tmp == NULL)
 			{
 				cmd->line_split[++(*line_i)] = NULL;
-				ft_line_split_free(cmd);
+				ft_line_split_free(cmd->line_split);
 				return ;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/07 16:10:22 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/09 21:48:48 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <termios.h>
+# include <sys/wait.h>
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
@@ -69,7 +70,7 @@ typedef struct	s_idx
 
 // util_func
 char		*ft_realloc(char *ptr, int size);
-void		ft_line_split_free(t_cmd *cmd);
+void		ft_line_split_free(char **tmp);
 long long	ft_atol(const char *string);
 
 // term_set
