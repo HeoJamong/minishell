@@ -197,6 +197,8 @@ static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
 {
 	t_plst	*pipe_tmp;
 	
+	if (cmd->line_split[*i + 1] == NULL)
+		return (1);
 	(*tmp)->pipe_split[*k] = NULL;
 	*k = 0;
 	ms_lstadd_back(&(cmd->pipe_lst), ms_lstnew());
@@ -274,7 +276,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		printf("\n");
 		tmp = tmp->next;
 	}
-	// ms_builtin_func(cmd);
+	ms_builtin_func(cmd);
 	line_split_free(cmd);
 	tmp = cmd->pipe_lst;
 	while (tmp)
