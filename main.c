@@ -205,10 +205,10 @@ static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
 	if ((*tmp)->pipe_split == NULL)
 		exit (EXIT_FAILURE);
 	(*i)++;
-	if (ft_strnstr(cmd->line_split[*i], "|", 1))
+	if (ft_strnstr(cmd->line_split[*i], "|", 1) && ft_strlen(cmd->line_split[*i]) == 1)
 	{
 		*tmp = cmd->pipe_lst;
-		while ((*tmp)->next)
+		while (*tmp)
 		{	
 			pipe_tmp = *tmp;
 			*tmp = (*tmp)->next;
@@ -243,11 +243,9 @@ int	ms_line_pipe_split(t_cmd *cmd)
 			tmp->pipe_split[k] = NULL;
 			break ;
 		}
-		if (ft_strnstr(cmd->line_split[i], "|", 1))
-		{
+		if (ft_strnstr(cmd->line_split[i], "|", 1) && ft_strlen(cmd->line_split[i]) == 1)
 			if (line_pipe_split_find(cmd, &tmp, &i, &k))
 				return (1);
-		}
 		tmp->pipe_split[k] = NULL;
 	}
 	return (0);
@@ -267,16 +265,16 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		line_split_free(cmd);
 		return ;
 	}
-	tmp = ms_lstlast(cmd->pipe_lst);
+	tmp = cmd->pipe_lst;
 	while (tmp)
 	{
 		i = 0;
 		while (tmp->pipe_split[i])
 			printf("%s ", tmp->pipe_split[i++]);
 		printf("\n");
-		tmp = tmp->prev;
+		tmp = tmp->next;
 	}
-	ms_builtin_func(cmd);
+	// ms_builtin_func(cmd);
 	line_split_free(cmd);
 	tmp = cmd->pipe_lst;
 	while (tmp)
