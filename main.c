@@ -52,6 +52,7 @@ void	ms_builtin_func(t_cmd *cmd)
 {
 	int		dir;
 	char	*tmp;
+	char	buf[1000];
 
 	if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
 	{
@@ -191,6 +192,15 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "env",3))
 		print_env(cmd->envp);
+	else if (ft_strnstr(cmd->line_split[0], "<<", 2))
+	{
+		if (here_doc(cmd->line_split[1], cmd))
+			if (here_doc_pipe(cmd->rdr.line, cmd))
+			{
+				printf("%ld\n", read(cmd->rdr.fd, buf, 100));
+				printf("%s\n",buf);
+			}
+	}
 	else if (ft_strnstr(cmd->line_split[0], "<", 1))
 	{
 		if (input_redirect(cmd->line_split[1]))
@@ -199,8 +209,9 @@ void	ms_builtin_func(t_cmd *cmd)
 	else if (ft_strnstr(cmd->line_split[0], ">", 1))
 	{
 		if (output_redirect(cmd->line_split[1]))
-			printf("niceeeeeeeee\n");
+			printf("good\n");
 	}
+
 }
 
 int	ms_line_pipe_split(t_cmd *cmd)
@@ -285,6 +296,10 @@ int	main(int ac, char **av, char **envp)
 		ms_term_reset(&cmd);
 		ms_line_str_parsing(&cmd);
 		free(cmd.line);
+		if (cmd.rdr.fd)
+			unlink("tmp.txt");
 	}
+	if (cmd.rdr.fd)
+		unlink("tmp.txt");
 	return (0);
 }

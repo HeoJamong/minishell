@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/04 18:40:41 by jheo             ###   ########.fr       */
+/*   Updated: 2024/11/09 16:47:48 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
+typedef struct s_rdr
+{
+	char	*line;
+	int		fd;
+}	t_rdr;
 typedef struct	s_term
 {
 	struct termios	current_term;
@@ -44,6 +49,7 @@ typedef	struct	s_cmd
 	char			**line_split;
 	char			**envp;
 	struct s_term	term;
+	struct s_rdr	rdr;
 	struct s_plst	*pipe_lst;
 }	t_cmd;
 typedef struct	s_env_var
@@ -89,4 +95,6 @@ void	ms_lstadd_back(t_plst **lst, t_plst *new);
 //redirections
 int	input_redirect(char *str);
 int	output_redirect(char *str);
+int	here_doc(char *last_word, t_cmd *cmd);
+int	here_doc_pipe(char	*here_line, t_cmd *cmd);
 #endif
