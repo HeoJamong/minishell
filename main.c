@@ -16,7 +16,7 @@ int	exit_num_isdigit(char *num, int *flag)
 {
 	int	i;
 	i = 0;
-	
+
 	if (num[i] == '-')
 	{
 		*flag = 1;
@@ -52,6 +52,7 @@ void	ms_builtin_func(t_cmd *cmd)
 {
 	int		dir;
 	char	*tmp;
+	char	buf[1000];
 
 	if (ft_strnstr(cmd->line_split[0], "cd", 2) && ft_strlen(cmd->line_split[0]) == 2)
 	{
@@ -179,7 +180,7 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "export", 6) && ft_strlen(cmd->line_split[0]) == 6)
 	{
-		if (ft_export(cmd->line_split[1], cmd) == 1)	
+		if (ft_export(cmd->line_split[1], cmd) == 1)
 			printf("ok\n");
 		print_env(cmd->envp);
 	}
@@ -191,6 +192,26 @@ void	ms_builtin_func(t_cmd *cmd)
 	}
 	else if (ft_strnstr(cmd->line_split[0], "env",3))
 		print_env(cmd->envp);
+	else if (ft_strnstr(cmd->line_split[0], "<<", 2))
+	{
+		if (here_doc(cmd->line_split[1], cmd))
+			if (here_doc_pipe(cmd->rdr.line, cmd))
+			{
+				printf("%ld\n", read(cmd->rdr.fd, buf, 100));
+				printf("%s\n",buf);
+			}
+	}
+	else if (ft_strnstr(cmd->line_split[0], "<", 1))
+	{
+		if (input_redirect(cmd->line_split[1]))
+			printf("gooood\n");
+	}
+	else if (ft_strnstr(cmd->line_split[0], ">", 1))
+	{
+		if (output_redirect(cmd->line_split[1]))
+			printf("good\n");
+	}
+
 }
 
 static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
@@ -256,6 +277,7 @@ int	ms_line_pipe_split(t_cmd *cmd)
 void	ms_line_str_parsing(t_cmd *cmd)
 {
 	int i = 0;
+
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
 	
@@ -309,6 +331,10 @@ int	main(int ac, char **av, char **envp)
 		ms_term_reset(&cmd);
 		ms_line_str_parsing(&cmd);
 		free(cmd.line);
+		if (cmd.rdr.fd)
+			unlink("tmp.txt");
 	}
+	if (cmd.rdr.fd)
+		unlink("tmp.txt");
 	return (0);
 }

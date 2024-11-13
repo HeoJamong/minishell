@@ -11,7 +11,8 @@ SRC =	main.c \
 		ms_unset.c \
 		ms_line_token1.c \
 		ms_line_token2.c \
-		ms_line_token_utils.c
+		ms_line_token_utils.c \
+		ms_redirections.c
 
 OBJ =	$(SRC:.c=.o)
 
@@ -25,7 +26,7 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) \
 	./Libft/libft.a \
 	-lreadline
-	
+
 clean:
 	@make clean -C ./Libft
 	@rm -f $(OBJ)
