@@ -197,6 +197,8 @@ static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
 {
 	t_plst	*pipe_tmp;
 	
+	if (cmd->line_split[*i + 1] == NULL)
+		return (1);
 	(*tmp)->pipe_split[*k] = NULL;
 	*k = 0;
 	ms_lstadd_back(&(cmd->pipe_lst), ms_lstnew());
@@ -205,10 +207,11 @@ static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
 	if ((*tmp)->pipe_split == NULL)
 		exit (EXIT_FAILURE);
 	(*i)++;
-	if (ft_strnstr(cmd->line_split[*i], "|", 1))
+	if (ft_strnstr(cmd->line_split[*i], "|", 1) && \
+		ft_strlen(cmd->line_split[*i]) == 1)
 	{
 		*tmp = cmd->pipe_lst;
-		while ((*tmp)->next)
+		while (*tmp)
 		{	
 			pipe_tmp = *tmp;
 			*tmp = (*tmp)->next;
@@ -247,7 +250,8 @@ int	ms_line_pipe_split(t_cmd *cmd)
 			tmp->pipe_split[idx.k] = NULL;
 			break ;
 		}
-		if (ft_strnstr(cmd->line_split[idx.i], "|", 1))
+		if (ft_strnstr(cmd->line_split[idx.i], "|", 1) && \
+			ft_strlen(cmd->line_split[idx.i]) == 1)
 		{
 			cmd->sts.pipe_true = 1;
 			if (line_pipe_split_find(cmd, &tmp, &idx.i, &idx.k))
@@ -258,15 +262,14 @@ int	ms_line_pipe_split(t_cmd *cmd)
 	return (0);
 }
 
-void	cmd_proc_exec(t_cmd *cmd, int sts)
+void	cmd_proc_exec(t_cmd *cmd)
 {
 	char	**path_split;
 	char	*path;
 	int		pid;
 	int		i = 0;
-	int		executable = 0;
 
-	(void)sts;
+	ms_builtin_func(cmd);
 	pid = (int)fork();
 	if (pid == -1)
 		exit (EXIT_FAILURE);
@@ -274,8 +277,8 @@ void	cmd_proc_exec(t_cmd *cmd, int sts)
 	{
 		if (ft_strchr(cmd->pipe_lst->pipe_split[0], '/'))
 		{
-			if (access(cmd->pipe_lst->pipe_split[0], X_OK) == 0)
-				executable = 1;
+			if (access(cmd->pipe_lst->pipe_split[0], X_OK) != 0)
+				printf("minishell: %s: No such file or directory\n", cmd->pipe_lst->pipe_split[0]);
 		}
 		else
 		{
@@ -297,51 +300,45 @@ void	cmd_proc_exec(t_cmd *cmd, int sts)
 				path_split[i] = ft_strjoin(path_split[i], "/");
 				path_split[i] = ft_strjoin(path_split[i], cmd->pipe_lst->pipe_split[0]);
 				if (access(path_split[i], X_OK) == 0)
-				{
-					executable = 1;
 					break ;
-				}
 				i++;
+			}
+			if (path_split[i] == NULL)
+			{
+				printf("%s: command not found\n", cmd->pipe_lst->pipe_split[0]);
+				exit (EXIT_FAILURE);
 			}
 			free(cmd->pipe_lst->pipe_split[0]);
 			cmd->pipe_lst->pipe_split[0] = ft_strdup(path_split[i]);
 			ft_line_split_free(path_split);
 		}
-		if (executable == 0)
-			printf("minishell: %s: No such file or directory\n", cmd->pipe_lst->pipe_split[0]);
-		else
-			if (execve(cmd->pipe_lst->pipe_split[0], cmd->pipe_lst->pipe_split, cmd->envp) == -1)
-				exit (EXIT_FAILURE);
+		if (execve(cmd->pipe_lst->pipe_split[0], cmd->pipe_lst->pipe_split, cmd->envp) == -1)
+			exit (EXIT_FAILURE);
 	}
 	wait(NULL);
 }
 
-int	ms_cmd_exec(t_cmd *cmd)
-{
-	t_plst	*tmp;
+void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
+{	
+	int		pid;
 	int		fd[2];
 
-	tmp = cmd->pipe_lst;
-	if (cmd->sts.pipe_true == 0)
+	if (pipe(fd) == -1)
+		exit (EXIT_FAILURE);
+	pid = fork();
+	if (pid == 0)
 	{
 		ms_builtin_func(cmd);
-		cmd_proc_exec(cmd, 0);
+		
 	}
+}
+
+int	ms_cmd_exec(t_cmd *cmd)
+{
+	if (cmd->sts.pipe_true == 0)
+		cmd_proc_exec(cmd);
 	else
-	{	
-		if (pipe(fd) == -1);
-			exit (EXIT_FAILURE);
-		while (tmp)
-		{
-			if (tmp == cmd->pipe_lst)
-				cmd_proc_exec(cmd, 0);
-			else if (tmp->next == NULL)
-				cmd_proc_exec(cmd, 1);
-			else
-				cmd_proc_exec(cmd, 2);
-			tmp = tmp->next;
-		}
-	}
+		cmd_pipe_exec(cmd, cmd->pipe_lst);
 	return (0);
 }
 

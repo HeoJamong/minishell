@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/09 21:48:48 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:45:03 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct	s_plst
 typedef struct	s_sts
 {
 	int				process_status; // "$?"를 구현하기위해 만든 변수
-	int				pipe_true;
+	int				pipe_true; // 파이프 유무에 따라 fork가 결정됨
 	int				heredoc_true;
 }	t_sts;
 
