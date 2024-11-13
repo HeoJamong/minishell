@@ -214,13 +214,45 @@ void	ms_builtin_func(t_cmd *cmd)
 
 }
 
+static int	line_pipe_split_find(t_cmd *cmd, t_plst **tmp, int *i, int *k)
+{
+	t_plst	*pipe_tmp;
+	
+	if (cmd->line_split[*i + 1] == NULL)
+		return (1);
+	(*tmp)->pipe_split[*k] = NULL;
+	*k = 0;
+	ms_lstadd_back(&(cmd->pipe_lst), ms_lstnew());
+	*tmp = (*tmp)->next;
+	(*tmp)->pipe_split = (char **)malloc(sizeof(char *) * cmd->line_i);
+	if ((*tmp)->pipe_split == NULL)
+		exit (EXIT_FAILURE);
+	(*i)++;
+	if (ft_strnstr(cmd->line_split[*i], "|", 1) && ft_strlen(cmd->line_split[*i]) == 1)
+	{
+		*tmp = cmd->pipe_lst;
+		while (*tmp)
+		{	
+			pipe_tmp = *tmp;
+			*tmp = (*tmp)->next;
+			free(pipe_tmp->pipe_split);
+			free(pipe_tmp);
+		}
+		return (1);
+	}
+	return (0);
+}
+
 int	ms_line_pipe_split(t_cmd *cmd)
 {
 	t_plst	*tmp;
-	t_plst	*pipe_tmp;
-	int		i = 0;
-	int		k = 0;
+	int		i;
+	int		k;
 
+	i = 0;
+	k = 0;
+	if (cmd->line_split[i] == NULL)
+		return (1);
 	cmd->pipe_lst = ms_lstnew();
 	tmp = cmd->pipe_lst;
 	tmp->pipe_split = (char **)malloc(sizeof(char *) * (cmd->line_i + 1));
@@ -234,29 +266,9 @@ int	ms_line_pipe_split(t_cmd *cmd)
 			tmp->pipe_split[k] = NULL;
 			break ;
 		}
-		if (ft_strnstr(cmd->line_split[i], "|", 1))
-		{
-			tmp->pipe_split[k] = NULL;
-			k = 0;
-			ms_lstadd_back(&(cmd->pipe_lst), ms_lstnew());
-			tmp = tmp->next;
-			tmp->pipe_split = (char **)malloc(sizeof(char *) * cmd->line_i);
-			if (tmp->pipe_split == NULL)
-				exit (EXIT_FAILURE);
-			i++;
-			if (ft_strnstr(cmd->line_split[i], "|", 1))
-			{
-				tmp = cmd->pipe_lst;
-				while (tmp->next)
-				{
-					pipe_tmp = tmp;
-					free(tmp->pipe_split);
-					free(pipe_tmp);
-					tmp = tmp->next;
-				}
+		if (ft_strnstr(cmd->line_split[i], "|", 1) && ft_strlen(cmd->line_split[i]) == 1)
+			if (line_pipe_split_find(cmd, &tmp, &i, &k))
 				return (1);
-			}
-		}
 		tmp->pipe_split[k] = NULL;
 	}
 	return (0);
@@ -266,13 +278,36 @@ void	ms_line_str_parsing(t_cmd *cmd)
 {
 	int i = 0;
 
+	t_plst	*tmp;
+	t_plst	*pipe_tmp;
+	
 	ms_line_tokenizer(cmd, cmd->line);
 	while(cmd->line_split[i])
 		printf("check:%s\n", cmd->line_split[i++]);
-	if (cmd->pipe_true)
-		ms_line_pipe_split(cmd);
+	if (ms_line_pipe_split(cmd))
+	{
+		line_split_free(cmd);
+		return ;
+	}
+	tmp = cmd->pipe_lst;
+	while (tmp)
+	{
+		i = 0;
+		while (tmp->pipe_split[i])
+			printf("%s ", tmp->pipe_split[i++]);
+		printf("\n");
+		tmp = tmp->next;
+	}
 	ms_builtin_func(cmd);
 	line_split_free(cmd);
+	tmp = cmd->pipe_lst;
+	while (tmp)
+	{
+		pipe_tmp = tmp;
+		tmp = tmp->next;
+		free(pipe_tmp->pipe_split);
+		free(pipe_tmp);
+	}
 }
 
 int	main(int ac, char **av, char **envp)
