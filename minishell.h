@@ -6,6 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
+/*   Updated: 2024/11/15 00:30:47 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +22,7 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <termios.h>
+# include <sys/wait.h>
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
@@ -40,13 +42,25 @@ typedef struct	s_plst
 	struct s_plst	*prev;
 	struct s_plst	*next;
 }	t_plst;
-typedef	struct	s_cmd
+typedef struct	s_sts
 {
 	int				process_status; // "$?"를 구현하기위해 만든 변수
+	int				pipe_true; // 파이프 유무에 따라 fork가 결정됨
+	int				heredoc_true;
+}	t_sts;
+typedef struct	s_tmp
+{
+	int	i;
+	int	k;
+}	t_tmp;
+typedef	struct	s_cmd
+{
 	int				line_i;
 	char			*line;
 	char			**line_split;
 	char			**envp;
+	struct s_tmp	fd;
+	struct s_sts	sts;
 	struct s_term	term;
 	struct s_rdr	rdr;
 	struct s_plst	*pipe_lst;
@@ -62,7 +76,7 @@ typedef struct	s_env_var
 
 // util_func
 char		*ft_realloc(char *ptr, int size);
-void		line_split_free(t_cmd *cmd);
+void		ft_line_split_free(char **tmp);
 long long	ft_atol(const char *string);
 
 // term_set

@@ -6,16 +6,20 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:56:11 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/30 16:48:49 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/06 22:25:10 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	line_token_var_init(int *i, int *line_i)
+void	line_token_var_init(t_cmd *cmd, int *i, int *line_i)
 {
+	cmd->sts.process_status = 0;
+	cmd->sts.heredoc_true = 0;
+	cmd->sts.pipe_true = 0;
 	*i = 0;
 	*line_i = 0;
+
 }
 
 void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
@@ -51,7 +55,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	int	i;
 	int	line_i;
 
-	line_token_var_init(&i, &line_i);
+	line_token_var_init(cmd, &i, &line_i);
 	cmd->line_split = (char **)malloc(sizeof(char *) * (ft_strlen(line) + 1));
 	if (cmd->line_split == NULL)
 		exit (EXIT_FAILURE);
