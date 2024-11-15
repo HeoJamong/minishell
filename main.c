@@ -349,17 +349,16 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 		exit (EXIT_FAILURE);
 }
 
-void	cmd_exec(t_cmd *cmd)
+void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 {
 	int		pid;
 
-	ms_builtin_func(cmd);
+	// ms_builtin_func(cmd);
 	pid = (int)fork();
 	if (pid == -1)
 		exit (EXIT_FAILURE);
 	if (pid == 0)
-		cmd_path_cat_exec(cmd, cmd->pipe_lst);
-	wait(NULL);
+		cmd_path_cat_exec(cmd, tmp);
 }
 
 void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
@@ -386,13 +385,18 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 	}
 	else
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		ms_builtin_func(cmd);
+		if (tmp->next)
+		{
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+		}
+		// ms_builtin_func(cmd);
+		// cmd_exec(cmd, tmp);
 		cmd_path_cat_exec(cmd, tmp);
 		waitpid(pid, &exit_sts, 0);
 	}
+	exit (EXIT_SUCCESS);
 }
 
 int	ms_exec(t_cmd *cmd)
@@ -401,21 +405,24 @@ int	ms_exec(t_cmd *cmd)
 	int		exit_sts;
 
 	if (cmd->sts.pipe_true == 0)
-		cmd_exec(cmd);
+	{
+		cmd_exec(cmd, cmd->pipe_lst);
+		wait(NULL);
+	}
 	else
 	{
 		pid = fork();
 		if (pid == 0)
 			cmd_pipe_exec(cmd, cmd->pipe_lst);
-		waitpid(pid, &exit_sts, 0);
+		else
+			waitpid(pid, &exit_sts, 0);
 	}
 	return (0);
 }
 
 void	ms_line_str_parsing(t_cmd *cmd)
 {
-	int i = 0;
-
+	// int i = 0;
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
 	
@@ -425,15 +432,15 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		ft_line_split_free(cmd->line_split);
 		return ;
 	}
-	tmp = cmd->pipe_lst;
-	while (tmp)
-	{
-		i = 0;
-		while (tmp->pipe_split[i])
-			printf("%s ", tmp->pipe_split[i++]);
-		printf("\n");
-		tmp = tmp->next;
-	}
+	// tmp = cmd->pipe_lst;
+	// while (tmp)
+	// {
+	// 	i = 0;
+	// 	while (tmp->pipe_split[i])
+	// 		printf("%s ", tmp->pipe_split[i++]);
+	// 	printf("\n");
+	// 	tmp = tmp->next;
+	// }
 	ms_exec(cmd);
 	ft_line_split_free(cmd->line_split);
 	tmp = cmd->pipe_lst;
