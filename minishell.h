@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/11 22:45:03 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:30:47 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,18 @@ typedef struct	s_sts
 	int				pipe_true; // 파이프 유무에 따라 fork가 결정됨
 	int				heredoc_true;
 }	t_sts;
-
+typedef struct	s_tmp
+{
+	int	i;
+	int	k;
+}	t_tmp;
 typedef	struct	s_cmd
 {
 	int				line_i;
 	char			*line;
 	char			**line_split;
 	char			**envp;
+	struct s_tmp	fd;
 	struct s_sts	sts;
 	struct s_term	term;
 	struct s_plst	*pipe_lst;
@@ -62,11 +67,6 @@ typedef struct	s_env_var
 	int		len;
 	int		n;
 }	t_env_var;
-typedef struct	s_idx
-{
-	int	i;
-	int	k;
-}	t_idx;
 
 // util_func
 char		*ft_realloc(char *ptr, int size);
