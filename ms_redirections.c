@@ -31,7 +31,7 @@ int	output_redirect(char *file_name)
 	}
 	if (dup2(out_file, 1) == -1)
 	{
-		printf("dop error\n");
+		printf("dup error\n");
 		return (0);
 	}
 	close(1);
@@ -50,7 +50,7 @@ int	continuing_redirect(char *file_name)
 	}
 		if (dup2(continuing_file, 1) == -1)
 	{
-		printf("dop error\n");
+		printf("dup error\n");
 		return (0);
 	}
 	close(1);
