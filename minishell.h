@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
 /*   Updated: 2024/11/15 00:30:47 by jinsecho         ###   ########.fr       */
@@ -26,6 +26,11 @@
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
+typedef struct s_rdr
+{
+	char	*line;
+	int		fd;
+}	t_rdr;
 typedef struct	s_term
 {
 	struct termios	current_term;
@@ -57,6 +62,7 @@ typedef	struct	s_cmd
 	struct s_tmp	fd;
 	struct s_sts	sts;
 	struct s_term	term;
+	struct s_rdr	rdr;
 	struct s_plst	*pipe_lst;
 }	t_cmd;
 typedef struct	s_env_var
@@ -99,4 +105,9 @@ t_plst	*ms_lstnew(void);
 t_plst	*ms_lstlast(t_plst *lst);
 void	ms_lstadd_back(t_plst **lst, t_plst *new);
 
+//redirections
+int	input_redirect(char *str);
+int	output_redirect(char *str);
+int	here_doc(char *last_word, t_cmd *cmd);
+int	here_doc_pipe(char	*here_line, t_cmd *cmd);
 #endif
