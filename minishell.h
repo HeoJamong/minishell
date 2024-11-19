@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/15 00:30:47 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/18 23:25:31 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct	s_tmp
 }	t_tmp;
 typedef	struct	s_cmd
 {
+	int				pipe_cnt;
 	int				line_i;
 	char			*line;
 	char			**line_split;
