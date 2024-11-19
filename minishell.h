@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/19 18:26:24 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/19 21:43:46 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ typedef struct	s_plst
 }	t_plst;
 typedef struct	s_sts
 {
-	int				process_status; // "$?"를 구현하기위해 만든 변수
-	int				pipe_true; // 파이프 유무에 따라 fork가 결정됨
-	int				heredoc_true;
+	int	process_status; // "$?"를 구현하기위해 만든 변수
+	int	pipe_true; // 파이프 유무에 따라 fork가 결정됨
+	int	heredoc_true;
 }	t_sts;
 typedef struct	s_tmp
 {
@@ -106,14 +106,17 @@ t_plst	*ms_lstnew(void);
 t_plst	*ms_lstlast(t_plst *lst);
 void	ms_lstadd_back(t_plst **lst, t_plst *new);
 
-//redirections
+// redirections
 int	input_redirect(char *str);
 int	output_redirect(char *str);
 int	here_doc(char *last_word, t_cmd *cmd);
 int	here_doc_pipe(char	*here_line, t_cmd *cmd);
 
-//pipe_exec
+// pipe_exec
 void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);
 void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp);
+
+// builtin_func
+int	ms_builtin_func(t_cmd *cmd, t_plst *tmp);
 
 #endif
