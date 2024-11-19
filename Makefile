@@ -12,7 +12,8 @@ SRC =	main.c \
 		ms_line_token1.c \
 		ms_line_token2.c \
 		ms_line_token_utils.c \
-		ms_redirections.c
+		ms_redirections.c \
+		ms_pipe_exec.c
 
 OBJ =	$(SRC:.c=.o)
 

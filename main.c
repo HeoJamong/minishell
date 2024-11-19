@@ -365,139 +365,12 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 	waitpid(pid, &exit_sts, 0);
 }
 
-int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
+int	ms_exec(t_cmd *cmd)
 {
-	int	pid;
-	int	i = 0;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		dup2(fd[1], STDOUT_FILENO);
-		while (i < cmd->pipe_cnt)
-		{
-			close(fds[i][0]);
-			close(fds[i][1]);
-			i++;
-		}
-		cmd_path_cat_exec(cmd, tmp);
-	}
-	return (pid);
-}
-
-int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
-{
-	int	pid;
-	int	i = 0;
-	
-	pid = fork();
-	if (pid == 0)
-	{
-		dup2(fd[0], STDIN_FILENO);
-		while (i < cmd->pipe_cnt)
-		{
-			close(fds[i][0]);
-			close(fds[i][1]);
-			i++;
-		}
-		// ms_builtin_func(cmd);
-		cmd_path_cat_exec(cmd, tmp);
-	}
-	return (pid);
-}
-
-int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, int **fds)
-{
-	int	pid;
-	int	i = 0;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		dup2(prev_fd[0], STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		while (i < cmd->pipe_cnt)
-		{
-			close(fds[i][0]);
-			close(fds[i][1]);
-			i++;
-		}
-		cmd_path_cat_exec(cmd, tmp);
-	}
-	return (pid);
-}
-
-void	cmd_pipe_exec_first_fix(t_cmd *cmd, t_plst *tmp)
-{
-	int	**fds;
-	int	*pid_idx;
-	int	i;
-	int	exit_sts;
-
-	i = 0;
-	fds = (int **)malloc(sizeof(int *) * cmd->pipe_cnt);
-	while (i < cmd->pipe_cnt)
-		fds[i++] = (int *)malloc(sizeof(int) * 2);
-	pid_idx = (int *)malloc(sizeof(int) * (cmd->pipe_cnt + 1));
-	i = 0;
-	while (i < cmd->pipe_cnt)
-	{
-		if (pipe(fds[i]) == -1)
-			exit (EXIT_FAILURE);
-		i++;
-	}
-	i = 0;
-	while (tmp)
-	{
-		if (tmp == cmd->pipe_lst)
-		{	
-			pid_idx[i] = cmd_pipe_exec_begin(cmd, tmp, fds[i], fds);
-			close(fds[i][1]);
-		}
-		else if (tmp->next == NULL)
-		{
-			pid_idx[i] = cmd_pipe_exec_end(cmd, tmp, fds[i - 1], fds);
-			close(fds[i - 1][0]);
-		}
-		else
-		{
-			pid_idx[i] = cmd_pipe_exec_middle(cmd, tmp, fds[i - 1], fds[i], fds);
-			close(fds[i - 1][0]);
-			close(fds[i][1]);
-		}
-		i++;
-		tmp = tmp->next;
-	}
-	i = 0;
-	while (i < cmd->pipe_cnt)
-	{
-		close(fds[i][0]);
-		close(fds[i][1]);
-		i++;
-	}
-	while (wait(&exit_sts) > 0);
-	i = 0;
-	while (i < cmd->pipe_cnt)
-		free(fds[i++]);
-	free(fds);
-	free(pid_idx);
-	// i = 0;
-	// while (i < cmd->pipe_cnt + 1)
-	// {
-	// 	waitpid(pid_idx[i], &exit_sts, 0);
-	// 	i++;
-	// }
-}
-
-int	ms_exec_first_fix(t_cmd *cmd)
-{
-	// int		pid;
-	// int		exit_sts;
-
 	if (cmd->sts.pipe_true == 0)
 		cmd_exec(cmd, cmd->pipe_lst);
 	else
-		cmd_pipe_exec_first_fix(cmd, cmd->pipe_lst);
+		cmd_pipe_exec(cmd, cmd->pipe_lst);
 	return (0);
 }
 
@@ -520,16 +393,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		tmp = tmp->next;
 	}
 	cmd->pipe_cnt = i;
-	// tmp = cmd->pipe_lst;
-	// while (tmp)
-	// {
-	// 	i = 0;
-	// 	while (tmp->pipe_split[i])
-	// 		printf("%s ", tmp->pipe_split[i++]);
-	// 	printf("\n");
-	// 	tmp = tmp->next;
-	// }
-	ms_exec_first_fix(cmd);
+	ms_exec(cmd);
 	ft_line_split_free(cmd->line_split);
 	tmp = cmd->pipe_lst;
 	while (tmp)
@@ -549,8 +413,6 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (0);
 	cmd.envp = set_env(envp);
-	// cmd.fd.i = dup(STDIN_FILENO);
-	// cmd.fd.k = dup(STDOUT_FILENO);
 	while (1)
 	{
 		ms_term_set(&cmd);
