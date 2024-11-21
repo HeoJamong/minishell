@@ -59,10 +59,10 @@ int	continuing_redirect(char *file_name)
 
 int	here_doc(char *last_word, t_cmd *cmd)
 {
-
 	char	*str;
 	char	*line;
 
+	(void)cmd;
 	line = ft_strdup("");
 	while(1)
 	{
@@ -78,7 +78,7 @@ int	here_doc(char *last_word, t_cmd *cmd)
 		line = ft_strjoin(line, "\n");
 		free(str);
 	}
-	cmd->rdr.line = line;
+	// cmd->rdr.line = line;
 	return (1);
 }
 
@@ -86,6 +86,7 @@ int	here_doc_pipe(char	*here_line, t_cmd *cmd)
 {
 	int	fd;
 
+	(void)cmd;
 	fd = open("tmp.txt", O_RDWR | O_CREAT | O_TRUNC, 0666);
 	while (*here_line)
 	{
@@ -94,6 +95,6 @@ int	here_doc_pipe(char	*here_line, t_cmd *cmd)
 	}
 	close(fd);
 	fd = open("tmp.txt", O_RDONLY);
-	cmd->rdr.fd = fd;
+	// cmd->rdr.fd = fd;
 	return(1);
 }

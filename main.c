@@ -154,6 +154,7 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 	int		pid;
 	int		exit_sts;
 
+	// if (tmp->heredoc_true);
 	if (ms_builtin_func(cmd, tmp))
 	{
 		pid = (int)fork();
@@ -174,11 +175,97 @@ int	ms_exec(t_cmd *cmd)
 	return (0);
 }
 
+void	heredoc_input(t_plst *tmp, char *last_word)
+{
+	char	*str;
+	char	*line;
+	int		fd[2];
+	int		pid = 1;
+	int		exit_sts;
+
+	if (pipe(fd) == -1)
+		exit (EXIT_FAILURE);
+	tmp->heredoc_fd = fd;
+	pid = fork();
+	if (pid == 0)
+	{
+		line = ft_strdup("");
+		while(1)
+		{
+			str = readline("> ");
+			if (ft_strlen(str) == ft_strlen(last_word) && \
+				!ft_strncmp(str, last_word, ft_strlen(last_word)))
+				break ;
+			line = ft_strjoin(line, str);
+			line = ft_strjoin(line, "\n");
+			free(str);
+		}
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		printf("%s", line);
+		exit (EXIT_SUCCESS);
+	}
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid, &exit_sts, 0);
+}
+
+int	ms_handle_heredoc(t_cmd *cmd)
+{
+	t_plst	*tmp;
+	int		i = 0;
+	int		tmp_i = 0;
+	int		k;
+
+	tmp = cmd->pipe_lst;
+	tmp->heredoc_true = 0;
+	while (tmp)
+	{
+		while (tmp->pipe_split[i])
+		{
+			if (ft_strnstr(tmp->pipe_split[i], "<<", STDERR_FILENO) && \
+				ft_strlen(tmp->pipe_split[i]) == STDERR_FILENO)
+			{
+				if (tmp->pipe_split[i] == NULL)
+				{
+					ft_putstr_fd("minishell: ", STDERR_FILENO);
+					ft_putendl_fd("syntax error near unexpected token `newline'", STDERR_FILENO);
+					return (1);
+				}
+				tmp->heredoc_true = 1;
+				heredoc_input(tmp, tmp->pipe_split[i + 1]);
+				k = i;
+				k += 2;
+				if (tmp->pipe_split[k] == NULL)
+					tmp->pipe_split[i] = NULL;
+				else
+				{
+					tmp_i = i;
+					while (tmp->pipe_split[k])
+					{
+						tmp->pipe_split[tmp_i] = tmp->pipe_split[k];
+						tmp_i++;
+						k++;
+					}
+					tmp->pipe_split[tmp_i] = NULL;
+				}
+				if (tmp->pipe_split[tmp_i] == NULL)
+					break ;
+			}
+			i++;
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 void	ms_line_str_parsing(t_cmd *cmd)
 {
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
 	int 	i = 0;
+	int		k = 0;
 	
 	ms_line_tokenizer(cmd, cmd->line);
 	if (ms_line_pipe_split(cmd))
@@ -186,6 +273,8 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		ft_line_split_free(cmd->line_split);
 		return ;
 	}
+	if (ms_handle_heredoc(cmd))
+		return ;
 	tmp = cmd->pipe_lst;
 	while (tmp->next)
 	{
@@ -226,10 +315,8 @@ int	main(int ac, char **av, char **envp)
 		ms_term_reset(&cmd);
 		ms_line_str_parsing(&cmd);
 		free(cmd.line);
-		if (cmd.rdr.fd)
-			unlink("tmp.txt");
+	// 	if (cmd.rdr.fd)
+	// 		unlink("tmp.txt");
 	}
-	if (cmd.rdr.fd)
-		unlink("tmp.txt");
 	return (0);
 }
