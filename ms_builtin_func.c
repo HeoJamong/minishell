@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/21 02:00:10 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/21 15:26:42 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	min_exit_num_check(char num, int i)
 int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 {
 	char	*tmp;
-	// char	buf[1000];
 	int		dir;
 	int		ca_cnt = 0;
 
