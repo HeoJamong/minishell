@@ -25,6 +25,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make re -C ./Libft
+	@make re -C ./get_next_line
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) \
 	./Libft/libft.a \
 	-lreadline
