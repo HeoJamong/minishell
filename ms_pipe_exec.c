@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/25 16:40:55 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/26 21:33:19 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 				heredoc_true_lst = heredoc_true_lst->next;
 			}
 		}
+		if (tmp->rdr_true)
+			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
 			cmd_path_cat_exec(cmd, tmp);
 		exit (EXIT_SUCCESS);
@@ -79,6 +81,8 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 				heredoc_true_lst = heredoc_true_lst->next;
 			}
 		}
+		if (tmp->rdr_true)
+			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
 			cmd_path_cat_exec(cmd, tmp);
 		exit (EXIT_SUCCESS);
@@ -117,6 +121,8 @@ static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, 
 				heredoc_true_lst = heredoc_true_lst->next;
 			}
 		}
+		if (tmp->rdr_true)
+			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
 			cmd_path_cat_exec(cmd, tmp);
 		exit (EXIT_SUCCESS);	
@@ -181,9 +187,18 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 			close(tmp->heredoc_fd[0]);
 			close(tmp->heredoc_fd[1]);
 		}
+		if (tmp->rdr_true)
+			close(tmp->file_fd);
 		tmp = tmp->next;
 	}
 	while (wait(&exit_sts) > 0);
+	tmp = cmd->pipe_lst;
+	while (tmp)
+	{
+		if (tmp->rdr_true)
+			close(tmp->file_fd);
+		tmp = tmp->next;
+	}
 	i = 0;
 	while (i < cmd->pipe_cnt)
 		free(fds[i++]);

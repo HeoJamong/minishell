@@ -13,6 +13,7 @@ SRC =	main.c \
 		ms_line_token2.c \
 		ms_line_token_utils.c \
 		ms_redirections.c \
+		ms_rdr_input.c \
 		ms_pipe_exec.c \
 		ms_builtin_func.c
 
@@ -25,7 +26,6 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make re -C ./Libft
-	@make re -C ./get_next_line
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) \
 	./Libft/libft.a \
 	-lreadline

@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/26 18:59:10 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/26 20:41:55 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct	s_plst
 	char			**pipe_split;
 	int				*heredoc_fd;
 	int				heredoc_true;
+	int				file_fd;
 	int				rdr_true;
 	struct s_rdr	rdr;
 	struct s_plst	*prev;
@@ -113,6 +114,7 @@ int	input_redirect(char *str);
 int	output_redirect(char *str);
 int	here_doc(char *last_word, t_cmd *cmd);
 int	here_doc_pipe(char	*here_line, t_cmd *cmd);
+int	ms_heredoc_true_input(t_cmd *cmd);
 
 // pipe_exec
 void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);

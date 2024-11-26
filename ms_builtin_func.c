@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/25 17:42:02 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:51:57 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,11 +222,11 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 	// 		printf("gooood\n");
 	// 	return (0);
 	// // }
-	// else if (ft_strnstr(lst_tmp->pipe_split[0], ">", 1))
-	// {
-	// 	if (output_redirect(lst_tmp->pipe_split[1]))
-	// 		printf("good\n");
-	// 	return (0);
-	// }
+	else if (ft_strnstr(lst_tmp->pipe_split[0], ">", 1))
+	{
+		if (output_redirect(lst_tmp->pipe_split[1]))
+			printf("good\n");
+		return (0);
+	}
 	return (1);
 }
