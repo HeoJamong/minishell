@@ -192,7 +192,11 @@ void	heredoc_input(t_plst *tmp, char *last_word)
 	int		exit_sts;
 
 	if (tmp->heredoc_fd)
+	{
+		close(tmp->heredoc_fd[0]);
+		close(tmp->heredoc_fd[1]);
 		free(tmp->heredoc_fd);
+	}
 	fd = (int *)malloc(sizeof(int) * 2);
 	if (fd == NULL)
 		exit (EXIT_FAILURE);
@@ -222,6 +226,47 @@ void	heredoc_input(t_plst *tmp, char *last_word)
 	waitpid(pid, &exit_sts, 0);
 }
 
+int	redirection_file_input(t_plst *tmp, char *filename)
+{
+	int		*fd;
+	int		file_fd;
+	int		pid = 1;
+	int		exit_sts;
+
+	if (access(filename, F_OK) == -1)
+	{
+		// if (access(filename, R_OK) == -1)
+		// {
+		// 	ft_putstr_fd("minishell: ", STDERR_FILENO);
+		// 	ft_putstr_fd(filename, STDERR_FILENO);
+		// 	ft_putendl_fd(": Permission denied", STDERR_FILENO);
+		// }
+		// else
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		}
+		return (1);
+	}
+	if (tmp->heredoc_fd)
+	{
+		close(tmp->heredoc_fd[0]);
+		close(tmp->heredoc_fd[1]);
+		free(tmp->heredoc_fd);
+	}
+	fd = (int *)malloc(sizeof(int) * 2);
+	if (fd == NULL)
+		exit (EXIT_FAILURE);
+	if (pipe(fd) == -1)
+		exit (EXIT_FAILURE);
+	tmp->heredoc_fd = fd;
+	file_fd = open(filename, O_RDONLY);
+	dup2(file_fd, fd[0]);
+	waitpid(pid, &exit_sts, 3);
+	return (0);
+}
+
 int	ms_heredoc_true_input(t_cmd *cmd)
 {
 	t_plst	*tmp;
@@ -236,8 +281,34 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 		tmp->heredoc_fd = NULL;
 		while (tmp->pipe_split[i])
 		{
-			if (ft_strnstr(tmp->pipe_split[i], "<<", 2) && \
-				ft_strlen(tmp->pipe_split[i]) == 2)
+			if (ft_strnstr(tmp->pipe_split[i], "<", 1) \
+			&& ft_strlen(tmp->pipe_split[i]) == 1)
+			{
+				if (tmp->pipe_split[i + 1] == NULL)
+				{
+					ft_putstr_fd("minishell: ", STDERR_FILENO);
+					ft_putendl_fd("syntax error near unexpected token `newline'", STDERR_FILENO);
+					return (1);
+				}
+				tmp->heredoc_true = 1;
+				if (redirection_file_input(tmp, tmp->pipe_split[i + 1]))
+					return (1);
+				k = i;
+				k += 2;
+				if (tmp->pipe_split[k] == NULL)
+					tmp->pipe_split[i] = NULL;
+				else
+				{
+					while (tmp->pipe_split[k])
+					{
+						tmp->pipe_split[k - 2] = tmp->pipe_split[k];
+						k++;
+					}
+					tmp->pipe_split[k - 2] = NULL;
+				}
+			}
+			else if(ft_strnstr(tmp->pipe_split[i], "<<", 2) \
+			&& ft_strlen(tmp->pipe_split[i]) == 2)
 			{
 				if (tmp->pipe_split[i + 1] == NULL)
 				{
@@ -295,6 +366,8 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		}
 		return ;
 	}
+	// if (ms_rdr_true_output())
+	// 	return ;
 	tmp = cmd->pipe_lst;
 	while (tmp->next)
 	{
