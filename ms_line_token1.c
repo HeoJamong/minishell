@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:56:11 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/20 23:39:51 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:44:11 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	line_token_var_init(t_cmd *cmd, int *i, int *line_i)
 {
-	cmd->sts.process_status = 0;
 	cmd->sts.pipe_true = 0;
 	*i = 0;
 	*line_i = 0;

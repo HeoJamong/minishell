@@ -174,6 +174,7 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		if (pid == 0)
 			cmd_path_cat_exec(cmd, tmp);
 		waitpid(pid, &exit_sts, 0);
+		cmd->sts.process_status = exit_sts;
 	}
 	close(tmp->file_fd);
 	dup2(input_fd, STDIN_FILENO);
@@ -351,6 +352,7 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (0);
 	cmd.envp = set_env(envp);
+	cmd.sts.process_status = 0;
 	while (1)
 	{
 		ms_term_set(&cmd);

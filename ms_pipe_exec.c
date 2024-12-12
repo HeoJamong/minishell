@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/11/26 21:33:19 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:38:54 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 {
-	t_plst *heredoc_true_lst;
+	// t_plst *heredoc_true_lst;
 	int		pid;
 	int		i = 0;
 
@@ -30,17 +30,18 @@ static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 		}
 		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
 		{
+			//write(2, "sibal\n", 6);
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			heredoc_true_lst = cmd->pipe_lst;
-			while (heredoc_true_lst)
-			{
-				if (heredoc_true_lst->heredoc_true)
-				{
-					close(heredoc_true_lst->heredoc_fd[0]);
-					close(heredoc_true_lst->heredoc_fd[1]);
-				}
-				heredoc_true_lst = heredoc_true_lst->next;
-			}
+			// heredoc_true_lst = cmd->pipe_lst;
+			// while (heredoc_true_lst)
+			// {
+			// 	if (heredoc_true_lst->heredoc_true)
+			// 	{
+			// 		close(heredoc_true_lst->heredoc_fd[0]);
+			// 		close(heredoc_true_lst->heredoc_fd[1]);
+			// 	}
+			// 	heredoc_true_lst = heredoc_true_lst->next;
+			// }
 		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
@@ -53,7 +54,7 @@ static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 
 static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 {
-	t_plst *heredoc_true_lst;
+	// t_plst *heredoc_true_lst;
 	int	pid;
 	int	i = 0;
 	
@@ -70,16 +71,18 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
 		{
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			heredoc_true_lst = cmd->pipe_lst;
-			while (heredoc_true_lst)
-			{
-				if (heredoc_true_lst->heredoc_true)
-				{
-					close(heredoc_true_lst->heredoc_fd[0]);
-					close(heredoc_true_lst->heredoc_fd[1]);
-				}
-				heredoc_true_lst = heredoc_true_lst->next;
-			}
+			// heredoc_true_lst = cmd->pipe_lst;
+			// while (heredoc_true_lst)
+			// {
+			// 	write(2, "sibal\n", 6);
+			// 	if (heredoc_true_lst->heredoc_true)
+			// 	{
+			// 		close(heredoc_true_lst->heredoc_fd[0]);
+			// 		printf("\n%d",heredoc_true_lst->heredoc_fd[1]);
+			// 		close(heredoc_true_lst->heredoc_fd[1]);
+			// 	}
+			// 	heredoc_true_lst = heredoc_true_lst->next;
+			// }
 		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
@@ -92,7 +95,7 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 
 static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, int **fds)
 {
-	t_plst *heredoc_true_lst;
+	// t_plst *heredoc_true_lst;
 	int		pid;
 	int		i = 0;
 
@@ -110,16 +113,16 @@ static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, 
 		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
 		{
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			heredoc_true_lst = cmd->pipe_lst;
-			while (heredoc_true_lst)
-			{
-				if (heredoc_true_lst->heredoc_true)
-				{
-					close(heredoc_true_lst->heredoc_fd[0]);
-					close(heredoc_true_lst->heredoc_fd[1]);
-				}
-				heredoc_true_lst = heredoc_true_lst->next;
-			}
+			// heredoc_true_lst = cmd->pipe_lst;
+			// while (heredoc_true_lst)
+			// {	
+			// 	if (heredoc_true_lst->heredoc_true)
+			// 	{
+			// 		close(heredoc_true_lst->heredoc_fd[0]);
+			// 		close(heredoc_true_lst->heredoc_fd[1]);
+			// 	}
+			// 	heredoc_true_lst = heredoc_true_lst->next;
+			// }
 		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
@@ -187,8 +190,8 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 			close(tmp->heredoc_fd[0]);
 			close(tmp->heredoc_fd[1]);
 		}
-		if (tmp->rdr_true)
-			close(tmp->file_fd);
+		// if (tmp->rdr_true)
+		// 	close(tmp->file_fd);
 		tmp = tmp->next;
 	}
 	while (wait(&exit_sts) > 0);
