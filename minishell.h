@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:30:56 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:59:50 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line);
 void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i);
 void	line_token_redirect(t_cmd *cmd, char *line, int *line_i, int *i);
 void	line_token_str(t_cmd *cmd, char *line, int *line_i, int *i);
+int		ms_line_pipe_split(t_cmd *cmd);
 
 // pipe_linked_lst
 t_plst	*ms_lstnew(void);
@@ -115,6 +116,7 @@ int	output_redirect(char *str);
 int	here_doc(char *last_word, t_cmd *cmd);
 int	here_doc_pipe(char	*here_line, t_cmd *cmd);
 int	ms_heredoc_true_input(t_cmd *cmd);
+int	ms_rdr_true_output(t_cmd *cmd);
 
 // pipe_exec
 void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);

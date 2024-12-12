@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/11 17:53:51 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 19:17:24 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ static int	redirection_file_input(t_plst *tmp, char *filename)
 {
 	int		*fd;
 	int		file_fd;
-	// int		pid = 1;
-	// int		exit_sts;
 
 	if (tmp->heredoc_fd)
 	{
