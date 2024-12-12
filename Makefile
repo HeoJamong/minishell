@@ -14,6 +14,8 @@ SRC =	main.c \
 		ms_line_token_utils.c \
 		ms_redirections.c \
 		ms_rdr_input.c \
+		ms_rdr_output.c \
+		ms_pipe_split.c \
 		ms_pipe_exec.c \
 		ms_builtin_func.c
 
