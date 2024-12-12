@@ -154,14 +154,18 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 	int		pid;
 	int		exit_sts;
 	int		input_fd;
+	int		output_fd;
 	
 	input_fd = dup(STDIN_FILENO);
+	output_fd = dup(STDOUT_FILENO);
 	if (tmp->heredoc_true)
 	{
 		dup2(tmp->heredoc_fd[0], STDIN_FILENO);
 		close(tmp->heredoc_fd[0]);
 		close(tmp->heredoc_fd[1]);
 	}
+	if (tmp->rdr_true)
+		dup2(tmp->file_fd, STDOUT_FILENO);
 	if (ms_builtin_func(cmd, tmp))
 	{
 		pid = (int)fork();
@@ -170,8 +174,11 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		if (pid == 0)
 			cmd_path_cat_exec(cmd, tmp);
 		waitpid(pid, &exit_sts, 0);
+		cmd->sts.process_status = exit_sts;
 	}
+	close(tmp->file_fd);
 	dup2(input_fd, STDIN_FILENO);
+	dup2(output_fd, STDOUT_FILENO);
 }
 
 int	ms_exec(t_cmd *cmd)
@@ -183,91 +190,27 @@ int	ms_exec(t_cmd *cmd)
 	return (0);
 }
 
-void	heredoc_input(t_plst *tmp, char *last_word)
+int	redirection_file_output(t_plst *tmp, char *filename)
 {
-	char	*str;
-	char	*line;
-	int		*fd;
-	int		pid = 1;
-	int		exit_sts;
-
-	if (tmp->heredoc_fd)
-	{
-		close(tmp->heredoc_fd[0]);
-		close(tmp->heredoc_fd[1]);
-		free(tmp->heredoc_fd);
-	}
-	fd = (int *)malloc(sizeof(int) * 2);
-	if (fd == NULL)
-		exit (EXIT_FAILURE);
-	if (pipe(fd) == -1)
-		exit (EXIT_FAILURE);
-	tmp->heredoc_fd = fd;
-	pid = fork();
-	if (pid == 0)
-	{
-		line = ft_strdup("");
-		while(1)
-		{
-			str = readline("> ");
-			if (ft_strlen(str) == ft_strlen(last_word) && \
-				!ft_strncmp(str, last_word, ft_strlen(last_word)))
-				break ;
-			line = ft_strjoin(line, str);
-			line = ft_strjoin(line, "\n");
-			free(str);
-		}
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		printf("%s", line);
-		exit (EXIT_SUCCESS);
-	}
-	waitpid(pid, &exit_sts, 0);
-}
-
-int	redirection_file_input(t_plst *tmp, char *filename)
-{
-	int		*fd;
-	int		file_fd;
-	int		pid = 1;
-	int		exit_sts;
-
-	if (access(filename, F_OK) == -1)
-	{
-		// if (access(filename, R_OK) == -1)
-		// {
-		// 	ft_putstr_fd("minishell: ", STDERR_FILENO);
-		// 	ft_putstr_fd(filename, STDERR_FILENO);
-		// 	ft_putendl_fd(": Permission denied", STDERR_FILENO);
-		// }
-		// else
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-		}
+	if (tmp->file_fd)
+		close(tmp->file_fd);
+	tmp->file_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if (tmp->file_fd == -1)
 		return (1);
-	}
-	if (tmp->heredoc_fd)
-	{
-		close(tmp->heredoc_fd[0]);
-		close(tmp->heredoc_fd[1]);
-		free(tmp->heredoc_fd);
-	}
-	fd = (int *)malloc(sizeof(int) * 2);
-	if (fd == NULL)
-		exit (EXIT_FAILURE);
-	if (pipe(fd) == -1)
-		exit (EXIT_FAILURE);
-	tmp->heredoc_fd = fd;
-	file_fd = open(filename, O_RDONLY);
-	dup2(file_fd, fd[0]);
-	waitpid(pid, &exit_sts, 3);
 	return (0);
 }
 
-int	ms_heredoc_true_input(t_cmd *cmd)
+int	redirection_file_output_append(t_plst *tmp, char *filename)
+{
+	if (tmp->file_fd)
+		close(tmp->file_fd);
+	tmp->file_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	if (tmp->file_fd == -1)
+		return (1);
+	return (0);
+}
+
+int	ms_rdr_true_output(t_cmd *cmd)
 {
 	t_plst	*tmp;
 	int		i;
@@ -277,11 +220,11 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 	while (tmp)
 	{
 		i = 0;
-		tmp->heredoc_true = 0;
-		tmp->heredoc_fd = NULL;
+		tmp->rdr_true = 0;
+		tmp->file_fd = 0;
 		while (tmp->pipe_split[i])
 		{
-			if (ft_strnstr(tmp->pipe_split[i], "<", 1) \
+			if (ft_strnstr(tmp->pipe_split[i], ">", 1) \
 			&& ft_strlen(tmp->pipe_split[i]) == 1)
 			{
 				if (tmp->pipe_split[i + 1] == NULL)
@@ -290,8 +233,8 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 					ft_putendl_fd("syntax error near unexpected token `newline'", STDERR_FILENO);
 					return (1);
 				}
-				tmp->heredoc_true = 1;
-				if (redirection_file_input(tmp, tmp->pipe_split[i + 1]))
+				tmp->rdr_true = 1;
+				if (redirection_file_output(tmp, tmp->pipe_split[i + 1]))
 					return (1);
 				k = i;
 				k += 2;
@@ -307,7 +250,7 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 					tmp->pipe_split[k - 2] = NULL;
 				}
 			}
-			else if(ft_strnstr(tmp->pipe_split[i], "<<", 2) \
+			else if(ft_strnstr(tmp->pipe_split[i], ">>", 2) \
 			&& ft_strlen(tmp->pipe_split[i]) == 2)
 			{
 				if (tmp->pipe_split[i + 1] == NULL)
@@ -316,8 +259,9 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 					ft_putendl_fd("syntax error near unexpected token `newline'", STDERR_FILENO);
 					return (1);
 				}
-				tmp->heredoc_true = 1;
-				heredoc_input(tmp, tmp->pipe_split[i + 1]);
+				tmp->rdr_true = 1;
+				if (redirection_file_output_append(tmp, tmp->pipe_split[i + 1]))
+					return (1);
 				k = i;
 				k += 2;
 				if (tmp->pipe_split[k] == NULL)
@@ -366,8 +310,20 @@ void	ms_line_str_parsing(t_cmd *cmd)
 		}
 		return ;
 	}
-	// if (ms_rdr_true_output())
-	// 	return ;
+	if (ms_rdr_true_output(cmd))
+	{
+		ft_line_split_free(cmd->line_split);
+		tmp = cmd->pipe_lst;
+		while (tmp)
+		{
+			pipe_tmp = tmp;
+			tmp = tmp->next;
+			free(pipe_tmp->pipe_split);
+			free(pipe_tmp->heredoc_fd);
+			free(pipe_tmp);
+		}
+		return ;
+	}
 	tmp = cmd->pipe_lst;
 	while (tmp->next)
 	{
@@ -396,6 +352,7 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (0);
 	cmd.envp = set_env(envp);
+	cmd.sts.process_status = 0;
 	while (1)
 	{
 		ms_term_set(&cmd);
