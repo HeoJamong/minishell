@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_builtin_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:17:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:28:50 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "exit", 4) && ft_strlen(lst_tmp->pipe_split[0]) == 4)
 	{
-		printf("exit\n");
 		int i = 0;
 		int	flag;
 		int	exit_num_check;
@@ -144,7 +143,6 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 			exit(EXIT_SUCCESS);
 		else if (ca_cnt == 2)
 		{
-			printf("호출 됐나요?\n");
 			if (exit_num_isdigit(lst_tmp->pipe_split[1], &flag) == 0)
 				printf("숫자 아님\n");
 			else
@@ -159,7 +157,7 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 						i++;
 					}
 					if (exit_num_check == 0)
-						printf("exit: %lld\n", ft_atol(lst_tmp->pipe_split[1]));
+						exit(ft_atol(lst_tmp->pipe_split[1]));
 					else
 						printf("올바른 값이 아님\n");
 				}
@@ -173,13 +171,13 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 						i++;
 					}
 					if (exit_num_check == 0)
-						printf("exit: %lld\n", ft_atol(lst_tmp->pipe_split[1]));
+						exit(ft_atol(lst_tmp->pipe_split[1]));
 					else
 						printf("올바른 값이 아님\n");
 				}
 				else if ((flag == 0 && strlen(lst_tmp->pipe_split[1]) < 19 && strlen(lst_tmp->pipe_split[1]) > 0) \
 				|| (flag == 1 && strlen(lst_tmp->pipe_split[1]) < 20 && strlen(lst_tmp->pipe_split[1]) > 0))
-					printf("exit: %lld\n",ft_atol(lst_tmp->pipe_split[1]));
+					exit(ft_atol(lst_tmp->pipe_split[1]));
 			}
 		}
 		else

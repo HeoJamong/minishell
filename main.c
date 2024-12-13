@@ -22,7 +22,7 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 	{
 		if (access(tmp->pipe_split[0], X_OK) != 0)
 		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);	
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
 			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
 		}
@@ -40,7 +40,7 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 		}
 		if (path == NULL) // 환경변수에 path가 없을 때 처리
 		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);	
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
 			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
 		}
@@ -74,7 +74,7 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 	int		exit_sts;
 	int		input_fd;
 	int		output_fd;
-	
+
 	input_fd = dup(STDIN_FILENO);
 	output_fd = dup(STDOUT_FILENO);
 	if (tmp->heredoc_true)
@@ -93,7 +93,11 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		if (pid == 0)
 			cmd_path_cat_exec(cmd, tmp);
 		waitpid(pid, &exit_sts, 0);
-		cmd->sts.process_status = exit_sts;
+		if (WIFEXITED(exit_sts))
+		{
+			printf("리턴 값 %d\n", WEXITSTATUS(exit_sts));
+			cmd->sts.process_status = exit_sts;
+		}
 	}
 	close(tmp->file_fd);
 	dup2(input_fd, STDIN_FILENO);
@@ -114,7 +118,7 @@ void	ms_line_str_parsing(t_cmd *cmd)
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
 	int 	i = 0;
-	
+
 	ms_line_tokenizer(cmd, cmd->line);
 	if (ms_line_pipe_split(cmd))
 	{
