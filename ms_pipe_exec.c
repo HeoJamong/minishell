@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:38:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 21:59:31 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,11 +190,19 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 			close(tmp->heredoc_fd[0]);
 			close(tmp->heredoc_fd[1]);
 		}
-		// if (tmp->rdr_true)
-		// 	close(tmp->file_fd);
+		if (tmp->rdr_true)
+			close(tmp->file_fd);
 		tmp = tmp->next;
 	}
-	while (wait(&exit_sts) > 0);
+	i = 0;
+	ms_term_set(cmd, 1);
+	while (i < cmd->pipe_cnt + 1)
+	{
+		waitpid(pid_idx[i], &exit_sts, 0);
+		i++;
+	}
+	ms_term_set(cmd, 0);
+	cmd->sts.process_status = exit_sts;
 	tmp = cmd->pipe_lst;
 	while (tmp)
 	{

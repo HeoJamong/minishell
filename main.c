@@ -91,8 +91,13 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		if (pid == -1)
 			exit (EXIT_FAILURE);
 		if (pid == 0)
+		{
+			ms_term_reset(cmd);
 			cmd_path_cat_exec(cmd, tmp);
+		}
+		ms_term_set(cmd, 1);
 		waitpid(pid, &exit_sts, 0);
+		ms_term_set(cmd, 0);
 		cmd->sts.process_status = exit_sts;
 	}
 	close(tmp->file_fd);
@@ -180,7 +185,7 @@ int	main(int ac, char **av, char **envp)
 	cmd.sts.process_status = 0;
 	while (1)
 	{
-		ms_term_set(&cmd);
+		ms_term_set(&cmd, 0);
 		cmd.line = readline("minishell$ ");
 		if (cmd.line == NULL)
 		{
@@ -188,7 +193,6 @@ int	main(int ac, char **av, char **envp)
 			exit (EXIT_SUCCESS);
 		}
 		add_history(cmd.line);
-		ms_term_reset(&cmd);
 		ms_line_str_parsing(&cmd);
 		free(cmd.line);
 	}
