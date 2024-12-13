@@ -98,9 +98,15 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		ms_term_set(cmd, 1);
 		waitpid(pid, &exit_sts, 0);
 		if (WIFEXITED(exit_sts))
+			cmd->sts.process_status = WEXITSTATUS(exit_sts);
+		if (WIFSIGNALED(exit_sts))
 		{
-			printf("리턴 값 %d\n", WEXITSTATUS(exit_sts));
-			cmd->sts.process_status = exit_sts;
+			int	sig = WTERMSIG(exit_sts);
+			if (sig == SIGINT)
+				ft_putstr_fd("\n", 1);
+			else if (sig == SIGQUIT)
+				ft_putstr_fd("Quit (core dumped)\n", 1);
+			cmd->sts.process_status = sig + 128;
 		}
 		ms_term_set(cmd, 0);
 	}
@@ -118,7 +124,7 @@ int	ms_exec(t_cmd *cmd)
 	return (0);
 }
 
-void	ms_line_str_parsing(t_cmd *cmd)
+void	ms_line_parsing_exec(t_cmd *cmd)
 {
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
@@ -197,7 +203,7 @@ int	main(int ac, char **av, char **envp)
 			exit (EXIT_SUCCESS);
 		}
 		add_history(cmd.line);
-		ms_line_str_parsing(&cmd);
+		ms_line_parsing_exec(&cmd);
 		free(cmd.line);
 	}
 	return (0);
