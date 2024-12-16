@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ms_builtin_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
 /*   Updated: 2024/12/16 15:23:43 by jinsecho         ###   ########.fr       */
@@ -233,19 +233,19 @@ int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "export", 6) && ft_strlen(lst_tmp->pipe_split[0]) == 6)
 	{
-		// if (ft_export(lst_tmp->pipe_split[1], cmd) == 1)
-		ft_export(lst_tmp->pipe_split[1], cmd);
-		// printf("ok\n");
-		// print_env(cmd->envp);
-		cmd->sts.process_status = EXIT_SUCCESS;
+		if (ft_export(lst_tmp->pipe_split[1], cmd) == 0)
+		{
+			ft_putendl_fd("not a valid identifier", STDERR_FILENO);
+			cmd->sts.process_status = EXIT_FAILURE;
+		}
+		else
+			cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "unset", 5) && ft_strlen(lst_tmp->pipe_split[0]))
 	{
-		// if (ft_unset(lst_tmp->pipe_split[1], cmd) == 1)
-		ft_unset(lst_tmp->pipe_split[1], cmd);
-		// printf("ok\n");
-		// print_env(cmd->envp);
+		if (lst_tmp->pipe_split[1] != NULL)
+			ft_unset(lst_tmp->pipe_split[1], cmd);
 		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
