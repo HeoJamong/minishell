@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/13 19:51:03 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/14 16:12:14 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 				printf("minishell: cd: %s: No such file or directory\n", lst_tmp->pipe_split[1]);
 			free(tmp);
 		}
-		cmd->sts.process_status = 0;
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "pwd", 3) && ft_strlen(lst_tmp->pipe_split[0]) == 3)
@@ -112,7 +112,7 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 			exit (EXIT_FAILURE);
 		printf("%s\n", currdir);
 		free(currdir);
-		cmd->sts.process_status = 0;
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "echo", 4) && ft_strlen(lst_tmp->pipe_split[0]) == 4)
@@ -132,7 +132,7 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 				printf("%s ", lst_tmp->pipe_split[i++]);
 			printf("%s\n", lst_tmp->pipe_split[i]);
 		}
-		cmd->sts.process_status = 0;
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "exit", 4) && ft_strlen(lst_tmp->pipe_split[0]) == 4)
@@ -185,29 +185,29 @@ int	ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 		}
 		else
 			printf("minishell: exit: too many arguments\n");
-		cmd->sts.process_status = 0;
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "export", 6) && ft_strlen(lst_tmp->pipe_split[0]) == 6)
 	{
 		if (ft_export(lst_tmp->pipe_split[1], cmd) == 1)
 			printf("ok\n");
-		print_env(cmd->envp);
-		cmd->sts.process_status = 0;
+		// print_env(cmd->envp);
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "unset", 5) && ft_strlen(lst_tmp->pipe_split[0]))
 	{
 		if (ft_unset(lst_tmp->pipe_split[1], cmd) == 1)
 			printf("ok\n");
-		print_env(cmd->envp);
-		cmd->sts.process_status = 0;
+		// print_env(cmd->envp);
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "env",3))
 	{
 		print_env(cmd->envp);
-		cmd->sts.process_status = 0;
+		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
 	}
 	return (1);

@@ -192,7 +192,7 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (0);
 	cmd.envp = set_env(envp);
-	cmd.sts.process_status = 0;
+	cmd.sts.process_status = EXIT_SUCCESS;
 	while (1)
 	{
 		ms_term_set(&cmd, 0);
