@@ -103,9 +103,9 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		{
 			int	sig = WTERMSIG(exit_sts);
 			if (sig == SIGINT)
-				ft_putstr_fd("\n", 1);
+				ft_putstr_fd("\n", STDOUT_FILENO);
 			else if (sig == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", 1);
+				ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
 			cmd->sts.process_status = sig + 128;
 		}
 		ms_term_set(cmd, 0);
