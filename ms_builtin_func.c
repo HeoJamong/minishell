@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 15:23:43 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:43:33 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ int exit_num_isdigit(char *num, int *flag)
 {
 	int i;
 	i = 0;
-
+	if (num[i] == '+' || num[i] == 32 || num[i] == '\t' || num[i] == '\v')
+		i++;
 	if (num[i] == '-')
 	{
 		*flag = 1;
