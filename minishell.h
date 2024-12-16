@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 17:59:50 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/12 21:05:40 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void		ft_line_split_free(char **tmp);
 long long	ft_atol(const char *string);
 
 // term_set
-void		ms_term_set(t_cmd *cmd);
+void		ms_term_set(t_cmd *cmd, int i);
 void		ms_term_reset(t_cmd *cmd);
 
 // env_func

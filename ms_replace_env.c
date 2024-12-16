@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   replace_env.c                                      :+:      :+:    :+:   */
+/*   ms_replace_env.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:06:41 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/10/28 16:07:47 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:34:00 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static char	*ms_str_replace_env(t_cmd *cmd, char *line, int *n)
 	if (line[*n] == '?')
 	{
 		*n = 2;
-		ptr = ft_itoa(0);
+		ptr = ft_itoa(cmd->sts.process_status);
 	}
 	else if (ft_isalpha(line[*n]) || line[*n] == '_')
 		replace_env_find(cmd, &ptr, line, n);

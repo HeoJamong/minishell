@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:38:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/13 22:40:30 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,8 @@ static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 			close(fds[i][1]);
 			i++;
 		}
-		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
-		{
-			//write(2, "sibal\n", 6);
+		if (tmp->heredoc_true)
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			// heredoc_true_lst = cmd->pipe_lst;
-			// while (heredoc_true_lst)
-			// {
-			// 	if (heredoc_true_lst->heredoc_true)
-			// 	{
-			// 		close(heredoc_true_lst->heredoc_fd[0]);
-			// 		close(heredoc_true_lst->heredoc_fd[1]);
-			// 	}
-			// 	heredoc_true_lst = heredoc_true_lst->next;
-			// }
-		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
@@ -190,11 +177,29 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 			close(tmp->heredoc_fd[0]);
 			close(tmp->heredoc_fd[1]);
 		}
-		// if (tmp->rdr_true)
-		// 	close(tmp->file_fd);
+		if (tmp->rdr_true)
+			close(tmp->file_fd);
 		tmp = tmp->next;
 	}
-	while (wait(&exit_sts) > 0);
+	i = 0;
+	ms_term_set(cmd, 1);
+	while (i < cmd->pipe_cnt + 1)
+	{
+		waitpid(pid_idx[i], &exit_sts, 0);
+		i++;
+	}
+	if (WIFEXITED(exit_sts))
+		cmd->sts.process_status = WEXITSTATUS(exit_sts);
+	if (WIFSIGNALED(exit_sts))
+	{
+		int	sig = WTERMSIG(exit_sts);
+		if (sig == SIGINT)
+			ft_putstr_fd("\n", 1);
+		else if (sig == SIGQUIT)
+			ft_putstr_fd("Quit (core dumped)\n", 1);
+		cmd->sts.process_status = sig + 128;
+	}
+	ms_term_set(cmd, 0);
 	tmp = cmd->pipe_lst;
 	while (tmp)
 	{

@@ -91,13 +91,24 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		if (pid == -1)
 			exit (EXIT_FAILURE);
 		if (pid == 0)
+		{
+			ms_term_reset(cmd);
 			cmd_path_cat_exec(cmd, tmp);
+		}
+		ms_term_set(cmd, 1);
 		waitpid(pid, &exit_sts, 0);
 		if (WIFEXITED(exit_sts))
+			cmd->sts.process_status = WEXITSTATUS(exit_sts);
+		if (WIFSIGNALED(exit_sts))
 		{
-			printf("리턴 값 %d\n", WEXITSTATUS(exit_sts));
-			cmd->sts.process_status = exit_sts;
+			int	sig = WTERMSIG(exit_sts);
+			if (sig == SIGINT)
+				ft_putstr_fd("\n", 1);
+			else if (sig == SIGQUIT)
+				ft_putstr_fd("Quit (core dumped)\n", 1);
+			cmd->sts.process_status = sig + 128;
 		}
+		ms_term_set(cmd, 0);
 	}
 	close(tmp->file_fd);
 	dup2(input_fd, STDIN_FILENO);
@@ -113,7 +124,7 @@ int	ms_exec(t_cmd *cmd)
 	return (0);
 }
 
-void	ms_line_str_parsing(t_cmd *cmd)
+void	ms_line_parsing_exec(t_cmd *cmd)
 {
 	t_plst	*tmp;
 	t_plst	*pipe_tmp;
@@ -181,10 +192,10 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		return (0);
 	cmd.envp = set_env(envp);
-	cmd.sts.process_status = 0;
+	cmd.sts.process_status = EXIT_SUCCESS;
 	while (1)
 	{
-		ms_term_set(&cmd);
+		ms_term_set(&cmd, 0);
 		cmd.line = readline("minishell$ ");
 		if (cmd.line == NULL)
 		{
@@ -192,8 +203,7 @@ int	main(int ac, char **av, char **envp)
 			exit (EXIT_SUCCESS);
 		}
 		add_history(cmd.line);
-		ms_term_reset(&cmd);
-		ms_line_str_parsing(&cmd);
+		ms_line_parsing_exec(&cmd);
 		free(cmd.line);
 	}
 	return (0);
