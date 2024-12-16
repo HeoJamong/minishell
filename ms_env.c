@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/16 16:43:46 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/16 17:37:06 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	ft_export(char *str, t_cmd *cmd)
 	int		e_pointer;
 	char	**new;
 
-	if (str[0] == '=' || str[0] == '\0' || ft_isdigit(str[0]))
+	if (!(str[0] == '_' || ft_isalpha(str[0])))
 		return (0);
 	i = 0;
 	e_pointer = find_char_index(str, '=');
