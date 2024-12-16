@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_builtin_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 15:23:43 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 18:06:38 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,14 @@ int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 		}
 		else
 		{
-			while (i + 1 < ca_cnt)
-				printf("%s ", lst_tmp->pipe_split[i++]);
-			printf("%s\n", lst_tmp->pipe_split[i]);
+			if (lst_tmp->pipe_split[1] == NULL)
+				printf("\n");
+			else
+			{
+				while (i + 1 < ca_cnt)
+					printf("%s ", lst_tmp->pipe_split[i++]);
+				printf("%s\n", lst_tmp->pipe_split[i]);
+			}
 		}
 		cmd->sts.process_status = EXIT_SUCCESS;
 		return (0);
