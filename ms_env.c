@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ms_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/09/14 17:36:00 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/16 16:43:46 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@ char	**set_env(char **envp)
 	return (new);
 }
 
+int	check_ispossible_export(int c)
+{
+	if (ft_isalpha(c) || c == '_')
+		return (1);
+	return (0);
+}
+
 int	check_env(char *str, char *env)
 {
 	int	i;
@@ -66,13 +73,48 @@ void	new_export(char *str, char **new, int index)
 	new[index + 1] = NULL;
 }
 
+int	find_char_index(char *str, char c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
 int	ft_export(char *str, t_cmd *cmd)
 {
 	int		i;
+	int		e_pointer;
 	char	**new;
 
 	if (str[0] == '=' || str[0] == '\0' || ft_isdigit(str[0]))
 		return (0);
+	i = 0;
+	e_pointer = find_char_index(str, '=');
+	if (e_pointer)
+	{
+		while(i < e_pointer)
+		{
+			if (check_ispossible_export(str[i]) == 0)
+				return(0);
+			i++;
+		}
+	}
+	else
+	{
+		while (str[i])
+		{
+			if (check_ispossible_export(str[i]) == 0)
+				return(0);
+			i++;
+		}
+	}
 	i = 0;
 	while ((cmd->envp)[i])
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:29:07 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:29:09 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:46:30 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,7 @@ int	ft_unset(char *str, t_cmd *cmd)
 	i = ft_contains(str, cmd->envp);
 	new = malloc(sizeof(char *) * (len));
 	if (i == -1)
-	{
-		printf("없는거임\n");
 		return (0);
-	}
 	else
 	{
 		index = 0;
