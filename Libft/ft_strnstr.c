@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 18:36:33 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/03/09 19:43:30 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 18:00:20 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	char	*big1;
 	char	*little1;
 
-	if (big == NULL && len == 0)
+	if (big == NULL || len == 0)
 		return (NULL);
 	big1 = (char *)big;
 	little1 = (char *)little;

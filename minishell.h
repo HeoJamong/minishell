@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <termios.h>
 # include <sys/wait.h>
+# include <dirent.h>
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
@@ -43,6 +44,7 @@ typedef struct	s_plst
 	int				heredoc_true;
 	int				file_fd;
 	int				rdr_true;
+	int				rdr_input_file;
 	struct s_rdr	rdr;
 	struct s_plst	*prev;
 	struct s_plst	*next;

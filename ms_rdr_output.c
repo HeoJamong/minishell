@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 17:58:36 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/14 15:57:44 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:00:46 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,25 @@ static int	redirection_file_output(t_plst *tmp, char *filename)
 {
 	if (tmp->file_fd)
 		close(tmp->file_fd);
-	if (access(filename, F_OK) == -1)
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(filename, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-		return (1);
-	}
 	tmp->file_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (tmp->file_fd == -1)
 	{
-		if (access(filename, F_OK) == -1)
+		if (access(filename, X_OK) != 0)
 		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-			return (1);
+			if (access(filename, F_OK) != 0)
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(filename, STDERR_FILENO);
+				ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			}
+			else
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(filename, STDERR_FILENO);
+				ft_putendl_fd(": Permission denied", STDERR_FILENO);
+			}
 		}
+		return (1);
 	}
 	return (0);
 }
@@ -43,7 +45,24 @@ static int	redirection_file_output_append(t_plst *tmp, char *filename)
 		close(tmp->file_fd);
 	tmp->file_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (tmp->file_fd == -1)
+	{
+		if (access(filename, X_OK) != 0)
+		{
+			if (access(filename, F_OK) != 0)
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(filename, STDERR_FILENO);
+				ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			}
+			else
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(filename, STDERR_FILENO);
+				ft_putendl_fd(": Permission denied", STDERR_FILENO);
+			}
+		}
 		return (1);
+	}
 	return (0);
 }
 

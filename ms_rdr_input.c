@@ -6,13 +6,13 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/14 15:36:25 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:42:29 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	heredoc_input(t_plst *tmp, char *last_word)
+static void	heredoc_input(t_cmd *cmd, t_plst *tmp, char *last_word)
 {
 	char	*str;
 	char	*line;
@@ -32,14 +32,17 @@ static void	heredoc_input(t_plst *tmp, char *last_word)
 	if (pipe(fd) == -1)
 		exit (EXIT_FAILURE);
 	tmp->heredoc_fd = fd;
-	pid = fork();
+	pid = (int)fork();
 	if (pid == 0)
 	{
+		ms_term_reset(cmd);
 		close(fd[0]);
 		line = ft_strdup("");
 		while(1)
 		{
 			str = readline("> ");
+			if (str == NULL)
+				exit (EXIT_SUCCESS);
 			if (ft_strlen(str) == ft_strlen(last_word) && \
 				!ft_strncmp(str, last_word, ft_strlen(last_word)))
 				break ;
@@ -52,14 +55,24 @@ static void	heredoc_input(t_plst *tmp, char *last_word)
 		ft_putstr_fd(line, STDOUT_FILENO);
 		exit (EXIT_SUCCESS);
 	}
-	else
+	ms_term_set(cmd, 1);
+	waitpid(pid, &exit_sts, 0);
+	if (WIFEXITED(exit_sts))
+		cmd->sts.process_status = WEXITSTATUS(exit_sts);
+	if (WIFSIGNALED(exit_sts))
 	{
-		close(fd[1]);
-		waitpid(pid, &exit_sts, 0);
+		int	sig = WTERMSIG(exit_sts);
+		if (sig == SIGINT)
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		else if (sig == SIGQUIT)
+			ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+		cmd->sts.process_status = sig + 128;
 	}
+	ms_term_set(cmd, 0);
+	close(fd[1]);
 }
 
-static int	redirection_file_input(t_plst *tmp, char *filename)
+static int	redirection_file_input(t_cmd *cmd, t_plst *tmp, char *filename)
 {
 	int		*fd;
 	int		file_fd;
@@ -76,6 +89,8 @@ static int	redirection_file_input(t_plst *tmp, char *filename)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(filename, STDERR_FILENO);
 		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		tmp->rdr_input_file = 1;
+		cmd->sts.process_status = 1;
 		return (1);
 	}
 	fd = (int *)malloc(sizeof(int) * 2);
@@ -99,6 +114,7 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 	while (tmp)
 	{
 		i = 0;
+		tmp->rdr_input_file = 0;
 		tmp->heredoc_true = 0;
 		tmp->heredoc_fd = NULL;
 		while (tmp->pipe_split[i])
@@ -110,10 +126,12 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 				{
 					ft_putstr_fd("minishell: ", STDERR_FILENO);
 					ft_putendl_fd("syntax error near unexpected token `newline'", STDERR_FILENO);
+					tmp->rdr_input_file = 2;
+					cmd->sts.process_status = 2;
 					return (1);
 				}
 				tmp->heredoc_true = 1;
-				if (redirection_file_input(tmp, tmp->pipe_split[i + 1]))
+				if (redirection_file_input(cmd, tmp, tmp->pipe_split[i + 1]))
 					return (1);
 				k = i;
 				k += 2;
@@ -139,7 +157,7 @@ int	ms_heredoc_true_input(t_cmd *cmd)
 					return (1);
 				}
 				tmp->heredoc_true = 1;
-				heredoc_input(tmp, tmp->pipe_split[i + 1]);
+				heredoc_input(cmd, tmp, tmp->pipe_split[i + 1]);
 				k = i;
 				k += 2;
 				if (tmp->pipe_split[k] == NULL)
