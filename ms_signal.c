@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 20:58:33 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/13 22:17:55 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 21:51:37 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,31 @@ static void	ms_change_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static void	ms_current_signal(void)
+static void	heredoc_signal_handler(int signum)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	if (signum == SIGINT)
+	{
+		printf("> ^C\n");
+		exit(130);
+	}
+}
+
+static void	ms_heredoc_signal(void)
+{
+	signal(SIGINT, heredoc_signal_handler);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 static void	ms_wait_signal(void)
 {
 	signal(SIGINT, wait_signal_handler);
 	signal(SIGQUIT, wait_signal_handler);
+}
+
+static void	ms_current_signal(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 void	ms_term_set(t_cmd *cmd, int i)
@@ -63,8 +78,11 @@ void	ms_term_set(t_cmd *cmd, int i)
 	tcsetattr(0, TCSANOW, &cmd->term.change_term);
 }
 
-void	ms_term_reset(t_cmd *cmd)
+void	ms_term_reset(t_cmd *cmd, int i)
 {
-	ms_current_signal();
+	if (i == 0)
+		ms_current_signal();
+	else if (i == 1)
+		ms_heredoc_signal();
 	tcsetattr(0, TCSANOW, &cmd->term.current_term);
 }
