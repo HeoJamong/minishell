@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 16:23:23 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/17 20:29:51 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,5 +137,6 @@ void	print_env(char **env);
 int	check_env(char *str, char *env);
 int	find_char_index(char *str, char c);
 int	start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
+int	cd_tild_cntroller(t_plst  *lst_tmp, t_cmd *cmd);
 
 #endif
