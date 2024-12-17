@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_pipe_exec.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/13 22:40:30 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:51:37 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 	// t_plst *heredoc_true_lst;
 	int	pid;
 	int	i = 0;
-	
+
 	pid = fork();
 	if (pid == 0)
-	{	
+	{
 		dup2(fd[0], STDIN_FILENO);
 		while (i < cmd->pipe_cnt)
 		{
@@ -102,7 +102,7 @@ static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, 
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
 			// heredoc_true_lst = cmd->pipe_lst;
 			// while (heredoc_true_lst)
-			// {	
+			// {
 			// 	if (heredoc_true_lst->heredoc_true)
 			// 	{
 			// 		close(heredoc_true_lst->heredoc_fd[0]);
@@ -115,7 +115,7 @@ static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, 
 			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
 			cmd_path_cat_exec(cmd, tmp);
-		exit (EXIT_SUCCESS);	
+		exit (EXIT_SUCCESS);
 	}
 	return (pid);
 }
@@ -142,9 +142,9 @@ void	cmd_pipe_exec(t_cmd *cmd, t_plst *tmp)
 	i = 0;
 	while (tmp)
 	{
-		
+
 		if (tmp == cmd->pipe_lst)
-		{	
+		{
 			pid_idx[i] = cmd_pipe_exec_begin(cmd, tmp, fds[i], fds);
 			close(fds[i][1]);
 		}

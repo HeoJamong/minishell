@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 16:33:59 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/17 20:20:28 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	start_export(t_plst *lst_tmp, t_cmd *cmd)
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 		ft_putstr_fd(lst_tmp->pipe_split[1], STDERR_FILENO);
-		ft_putendl_fd("not a valid identifier", STDERR_FILENO);
+		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 		cmd->sts.process_status = EXIT_FAILURE;
 	}
 	else
@@ -66,8 +66,6 @@ void	start_export(t_plst *lst_tmp, t_cmd *cmd)
 
 int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 {
-	char *tmp;
-	int dir;
 	int ca_cnt = 0;
 
 	if (lst_tmp->pipe_split[0] == NULL)
@@ -76,80 +74,7 @@ int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 		ca_cnt++;
 	if (ft_strnstr(lst_tmp->pipe_split[0], "cd", 2) && ft_strlen(lst_tmp->pipe_split[0]) == 2)
 	{
-		if (ca_cnt > 2)
-		{
-			ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-			cmd->sts.process_status = EXIT_FAILURE;
-			return (0);
-		}
-		else if (ca_cnt == 1)
-			chdir(getenv("HOME"));
-		else if (strncmp("~", lst_tmp->pipe_split[1], 1) == 0)
-		{
-			if (ft_strlen(lst_tmp->pipe_split[1]) == 1)
-				chdir(getenv("HOME"));
-			else
-			{
-				if (lst_tmp->pipe_split[1][1] != '/')
-				{
-					tmp = lst_tmp->pipe_split[1];
-					dir = chdir(tmp);
-					if (dir)
-					{
-						ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-						ft_putstr_fd(tmp, STDERR_FILENO);
-						ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-						cmd->sts.process_status = EXIT_FAILURE;
-						return (0);
-					}
-				}
-				else
-				{
-					tmp = ft_strjoin(ft_strdup(getenv("HOME")), &(lst_tmp->pipe_split[1][1]));
-					dir = chdir(tmp);
-					if (dir)
-					{
-						ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-						ft_putstr_fd(tmp, STDERR_FILENO);
-						ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-						free(tmp);
-						cmd->sts.process_status = EXIT_FAILURE;
-						return (0);
-					}
-					free(tmp);
-				}
-			}
-		}
-		else if (strncmp("/", lst_tmp->pipe_split[1], 1) == 0)
-		{
-			tmp = lst_tmp->pipe_split[1];
-			dir = chdir(tmp);
-			if (dir)
-			{
-				ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-				ft_putstr_fd(tmp, STDERR_FILENO);
-				ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-				cmd->sts.process_status = EXIT_FAILURE;
-				return (0);
-			}
-		}
-		else
-		{
-			tmp = ft_strjoin(getcwd(NULL, 0), "/");
-			tmp = ft_strjoin(tmp, lst_tmp->pipe_split[1]);
-			dir = chdir(tmp);
-			if (dir)
-			{
-				ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-				ft_putstr_fd(lst_tmp->pipe_split[1], STDERR_FILENO);
-				ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-				free(tmp);
-				cmd->sts.process_status = EXIT_FAILURE;
-				return (0);
-			}
-			free(tmp);
-		}
-		cmd->sts.process_status = EXIT_SUCCESS;
+		start_cd(cmd, lst_tmp, ca_cnt);
 		return (0);
 	}
 	else if (ft_strnstr(lst_tmp->pipe_split[0], "pwd", 3) && ft_strlen(lst_tmp->pipe_split[0]) == 3)
