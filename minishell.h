@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 21:05:40 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 22:08:26 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <termios.h>
 # include <sys/wait.h>
+# include <dirent.h>
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
@@ -43,6 +44,7 @@ typedef struct	s_plst
 	int				heredoc_true;
 	int				file_fd;
 	int				rdr_true;
+	int				rdr_input_file;
 	struct s_rdr	rdr;
 	struct s_plst	*prev;
 	struct s_plst	*next;

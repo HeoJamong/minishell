@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 18:06:38 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 19:15:33 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ int exit_num_isdigit(char *num, int *flag)
 {
 	int i;
 	i = 0;
-
+	if (num[i] == '+' || num[i] == 32 || num[i] == '\t' || num[i] == '\v')
+		i++;
 	if (num[i] == '-')
 	{
 		*flag = 1;
@@ -240,7 +241,9 @@ int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
 	{
 		if (ft_export(lst_tmp->pipe_split[1], cmd) == 0)
 		{
-			ft_putendl_fd("not a valid identifier", STDERR_FILENO);
+			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+			ft_putstr_fd(lst_tmp->pipe_split[1], STDERR_FILENO);
+			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 			cmd->sts.process_status = EXIT_FAILURE;
 		}
 		else
