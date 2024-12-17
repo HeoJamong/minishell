@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 21:05:40 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:46:55 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,5 +124,15 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp);
 
 // builtin_func
 int	ms_builtin_func(t_cmd *cmd, t_plst *tmp);
+int	start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd);
+int exit_num_isdigit(char *num, int *flag);
+int max_exit_num_check(char num, int i);
+int min_exit_num_check(char num, int i);
+void	print_export(char **env);
+int	check_ispossible_export(int c);
+void	print_export(char **env);
+void	print_env(char **env);
+int	check_env(char *str, char *env);
+int	find_char_index(char *str, char c);
 
 #endif

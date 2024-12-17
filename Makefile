@@ -17,7 +17,10 @@ SRC =	main.c \
 		ms_rdr_output.c \
 		ms_pipe_split.c \
 		ms_pipe_exec.c \
-		ms_builtin_func.c
+		ms_builtin_func.c \
+		ms_exit.c \
+		ms_exit_num_check.c \
+		ms_export.c
 
 OBJ =	$(SRC:.c=.o)
 
