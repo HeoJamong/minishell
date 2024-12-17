@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 23:42:29 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 21:54:51 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	heredoc_input(t_cmd *cmd, t_plst *tmp, char *last_word)
 	pid = (int)fork();
 	if (pid == 0)
 	{
-		ms_term_reset(cmd);
+		ms_term_reset(cmd, 1);
 		close(fd[0]);
 		line = ft_strdup("");
 		while(1)
@@ -59,15 +59,6 @@ static void	heredoc_input(t_cmd *cmd, t_plst *tmp, char *last_word)
 	waitpid(pid, &exit_sts, 0);
 	if (WIFEXITED(exit_sts))
 		cmd->sts.process_status = WEXITSTATUS(exit_sts);
-	if (WIFSIGNALED(exit_sts))
-	{
-		int	sig = WTERMSIG(exit_sts);
-		if (sig == SIGINT)
-			ft_putstr_fd("\n", STDOUT_FILENO);
-		else if (sig == SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
-		cmd->sts.process_status = sig + 128;
-	}
 	ms_term_set(cmd, 0);
 	close(fd[1]);
 }

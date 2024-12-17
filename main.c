@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 23:33:11 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:09:14 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,7 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 			path_split[i] = ft_strjoin(path_split[i], "/");
 			path_split[i] = ft_strjoin(path_split[i], tmp->pipe_split[0]);
 			if (access(path_split[i], F_OK) == 0)
-			{
-				// if (access(path_split[i], X_OK) != 0)
-				// {
-				// 	ft_putstr_fd("minishell: ", STDERR_FILENO);
-				// 	ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
-				// 	ft_putendl_fd(": Permission denied", STDERR_FILENO);
-				// 	exit (126);
-				// }
 				break ;
-			}
 			i++;
 		}
 		if (path_split[i] == NULL)
@@ -119,7 +110,7 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 			exit (EXIT_FAILURE);
 		if (pid == 0)
 		{
-			ms_term_reset(cmd);
+			ms_term_reset(cmd, 0);
 			cmd_path_cat_exec(cmd, tmp);
 		}
 		ms_term_set(cmd, 1);
@@ -130,9 +121,9 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		{
 			int	sig = WTERMSIG(exit_sts);
 			if (sig == SIGINT)
-				ft_putstr_fd("\n", STDOUT_FILENO);
+				ft_putstr_fd("^C\n", STDOUT_FILENO);
 			else if (sig == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+				ft_putstr_fd("^\\Quit (core dumped)\n", STDOUT_FILENO);
 			cmd->sts.process_status = sig + 128;
 		}
 		ms_term_set(cmd, 0);
@@ -214,10 +205,14 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 int	main(int ac, char **av, char **envp)
 {
 	t_cmd	cmd;
+	int		input_fd;
+	int		output_fd;
 
 	(void)av;
 	if (ac != 1)
 		return (0);
+	input_fd = dup(STDIN_FILENO);
+	output_fd = dup(STDOUT_FILENO);
 	cmd.envp = set_env(envp);
 	cmd.sts.process_status = EXIT_SUCCESS;
 	while (1)
@@ -231,6 +226,8 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(cmd.line);
 		ms_line_parsing_exec(&cmd);
+		dup2(input_fd, STDIN_FILENO);
+		dup2(output_fd, STDOUT_FILENO);
 		free(cmd.line);
 	}
 	return (0);
