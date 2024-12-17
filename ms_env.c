@@ -6,23 +6,11 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/16 17:37:06 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/17 11:46:09 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_env(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-}
 
 char	**set_env(char **envp)
 {
@@ -45,58 +33,18 @@ char	**set_env(char **envp)
 	return (new);
 }
 
-int	check_ispossible_export(int c)
-{
-	if (ft_isalpha(c) || c == '_')
-		return (1);
-	return (0);
-}
-
-int	check_env(char *str, char *env)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && env[i] && (str[i] == env[i]) && \
-	(str[i] != '=') && (env[i] != '='))
-		i++;
-	if (i == 0)
-		return (0);
-	if (((str[i] == '=') && (env[i] == '=')))
-		return (1);
-	return (0);
-}
-
 void	new_export(char *str, char **new, int index)
 {
 	new[index] = ft_strdup(str);
 	new[index + 1] = NULL;
 }
 
-int	find_char_index(char *str, char c)
+
+int	e_pointer_export_check(int e_pointer, char *str)
 {
 	int	i;
 
 	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (i);
-		i++;
-	}
-	return (0);
-}
-
-int	ft_export(char *str, t_cmd *cmd)
-{
-	int		i;
-	int		e_pointer;
-	char	**new;
-
-	if (!(str[0] == '_' || ft_isalpha(str[0])))
-		return (0);
-	i = 0;
-	e_pointer = find_char_index(str, '=');
 	if (e_pointer)
 	{
 		while(i < e_pointer)
@@ -115,17 +63,38 @@ int	ft_export(char *str, t_cmd *cmd)
 			i++;
 		}
 	}
-	i = 0;
-	while ((cmd->envp)[i])
+	return (1);
+}
+
+int	change_env(t_cmd *cmd, char *str, int *i)
+{
+	while ((cmd->envp)[*i])
 	{
-		if (check_env(str, (cmd->envp)[i]))
+		if (check_env(str, (cmd->envp)[*i]))
 		{
-			free((cmd->envp)[i]);
-			(cmd->envp)[i] = ft_strdup(str);
+			free((cmd->envp)[*i]);
+			(cmd->envp)[*i] = ft_strdup(str);
 			return (1);
 		}
-		i++;
+		(*i)++;
 	}
+	return (0);
+}
+
+int	ft_export(char *str, t_cmd *cmd)
+{
+	int		i;
+	int		e_pointer;
+	char	**new;
+
+	i = 0;
+	if (!(str[0] == '_' || ft_isalpha(str[0])))
+		return (0);
+	e_pointer = find_char_index(str, '=');
+	if (e_pointer_export_check(e_pointer, str) == 0)
+		return (0);
+	if (change_env(cmd, str, &i) == 1)
+		return (1);
 	new = malloc(sizeof(char *) * (i + 2));
 	if (new == NULL)
 		exit(1);
@@ -133,8 +102,7 @@ int	ft_export(char *str, t_cmd *cmd)
 	while (cmd->envp[i])
 	{
 		new[i] = ft_strdup((cmd->envp)[i]);
-		free((cmd->envp)[i]);
-		i++;
+		free((cmd->envp)[i++]);
 	}
 	new_export(str, new, i);
 	free(cmd->envp);
