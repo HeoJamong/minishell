@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ms_builtin_func.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 19:15:33 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 16:33:59 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -28,7 +29,8 @@ void	start_echo(t_plst *lst_tmp, t_cmd *cmd, int ca_cnt)
 {
 	int i = 1;
 
-	if (ft_strnstr(lst_tmp->pipe_split[1], "-n", 2) && ft_strlen(lst_tmp->pipe_split[1]) == 2)
+	if (ft_strnstr(lst_tmp->pipe_split[1], "-n", 2) \
+		&& ft_strlen(lst_tmp->pipe_split[1]) == 2)
 	{
 		i = 2;
 		while (i + 1 < ca_cnt)
@@ -37,9 +39,14 @@ void	start_echo(t_plst *lst_tmp, t_cmd *cmd, int ca_cnt)
 	}
 	else
 	{
-		while (i + 1 < ca_cnt)
-			printf("%s ", lst_tmp->pipe_split[i++]);
-		printf("%s\n", lst_tmp->pipe_split[i]);
+		if (lst_tmp->pipe_split[1] == NULL)
+			printf("\n");
+		else
+		{
+			while (i + 1 < ca_cnt)
+				printf("%s ", lst_tmp->pipe_split[i++]);
+			printf("%s\n", lst_tmp->pipe_split[i]);
+		}
 	}
 	cmd->sts.process_status = EXIT_SUCCESS;
 }
@@ -48,6 +55,8 @@ void	start_export(t_plst *lst_tmp, t_cmd *cmd)
 {
 	if (ft_export(lst_tmp->pipe_split[1], cmd) == 0)
 	{
+		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+		ft_putstr_fd(lst_tmp->pipe_split[1], STDERR_FILENO);
 		ft_putendl_fd("not a valid identifier", STDERR_FILENO);
 		cmd->sts.process_status = EXIT_FAILURE;
 	}
