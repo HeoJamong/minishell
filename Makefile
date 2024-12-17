@@ -5,7 +5,8 @@ NAME =	minishell
 SRC =	main.c \
 		ms_lst.c \
 		ms_utils.c \
-		ms_signal.c \
+		ms_signal1.c \
+		ms_signal2.c \
 		ms_replace_env.c \
 		ms_env.c \
 		ms_unset.c \

@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/13 22:40:30 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:27:56 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 {
-	// t_plst *heredoc_true_lst;
-	int		pid;
-	int		i = 0;
+	int	i;
+	int	pid;
 
+	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -41,10 +41,10 @@ static int	cmd_pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 
 static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 {
-	// t_plst *heredoc_true_lst;
+	int	i;
 	int	pid;
-	int	i = 0;
-	
+
+	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{	
@@ -55,22 +55,8 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 			close(fds[i][1]);
 			i++;
 		}
-		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
-		{
+		if (tmp->heredoc_true)
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			// heredoc_true_lst = cmd->pipe_lst;
-			// while (heredoc_true_lst)
-			// {
-			// 	write(2, "sibal\n", 6);
-			// 	if (heredoc_true_lst->heredoc_true)
-			// 	{
-			// 		close(heredoc_true_lst->heredoc_fd[0]);
-			// 		printf("\n%d",heredoc_true_lst->heredoc_fd[1]);
-			// 		close(heredoc_true_lst->heredoc_fd[1]);
-			// 	}
-			// 	heredoc_true_lst = heredoc_true_lst->next;
-			// }
-		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))
@@ -82,10 +68,10 @@ static int	cmd_pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 
 static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, int **fds)
 {
-	// t_plst *heredoc_true_lst;
-	int		pid;
-	int		i = 0;
+	int	i;
+	int	pid;
 
+	i = 0;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -97,20 +83,8 @@ static int	cmd_pipe_exec_middle(t_cmd *cmd, t_plst *tmp, int *prev_fd, int *fd, 
 			close(fds[i][1]);
 			i++;
 		}
-		if (tmp->heredoc_true) // heredoc이 있을때 읽는 파이프
-		{
+		if (tmp->heredoc_true)
 			dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-			// heredoc_true_lst = cmd->pipe_lst;
-			// while (heredoc_true_lst)
-			// {	
-			// 	if (heredoc_true_lst->heredoc_true)
-			// 	{
-			// 		close(heredoc_true_lst->heredoc_fd[0]);
-			// 		close(heredoc_true_lst->heredoc_fd[1]);
-			// 	}
-			// 	heredoc_true_lst = heredoc_true_lst->next;
-			// }
-		}
 		if (tmp->rdr_true)
 			dup2(tmp->file_fd, STDOUT_FILENO);
 		if (ms_builtin_func(cmd, tmp))

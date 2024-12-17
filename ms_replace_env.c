@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:06:41 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 15:54:33 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:22:17 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	ms_line_replace_env(t_cmd *cmd, char **ptr, char *line)
 			ft_strlcpy(\
 			&(*ptr)[env.cnt], env.env_tmp, ft_strlen(env.env_tmp) + 1);
 			ft_strlcat(*ptr, env.str_tmp, env.len + 1);
-			(env.cnt) += ft_strlen(env.env_tmp);
+			env.cnt += ft_strlen(env.env_tmp);
 			free(env.str_tmp);
 		}
 		while ((*ptr)[env.cnt] != '$' && (*ptr)[env.cnt])
