@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/09/05 13:57:22jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:33:11 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,29 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 
 	if (ft_strchr(tmp->pipe_split[0], '/'))
 	{
-		if (access(tmp->pipe_split[0], X_OK) != 0)
+		if (opendir(tmp->pipe_split[0]))
 		{
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			ft_putendl_fd(": Is a directory", STDERR_FILENO);
+			exit (126);
+		}
+		if (access(tmp->pipe_split[0], X_OK) != 0)
+		{
+			if (access(tmp->pipe_split[0], F_OK) != 0)
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
+				ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+				exit (127);
+			}
+			else
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
+				ft_putendl_fd(": Permission denied", STDERR_FILENO);
+				exit (126);
+			}
 		}
 	}
 	else
@@ -50,15 +68,24 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 		{
 			path_split[i] = ft_strjoin(path_split[i], "/");
 			path_split[i] = ft_strjoin(path_split[i], tmp->pipe_split[0]);
-			if (access(path_split[i], X_OK) == 0)
+			if (access(path_split[i], F_OK) == 0)
+			{
+				// if (access(path_split[i], X_OK) != 0)
+				// {
+				// 	ft_putstr_fd("minishell: ", STDERR_FILENO);
+				// 	ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
+				// 	ft_putendl_fd(": Permission denied", STDERR_FILENO);
+				// 	exit (126);
+				// }
 				break ;
+			}
 			i++;
 		}
 		if (path_split[i] == NULL)
 		{
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
 			ft_putendl_fd(": command not found", STDERR_FILENO);
-			exit (EXIT_FAILURE);
+			exit (127);
 		}
 		free(tmp->pipe_split[0]);
 		tmp->pipe_split[0] = ft_strdup(path_split[i]);
@@ -103,9 +130,9 @@ void	cmd_exec(t_cmd *cmd, t_plst *tmp)
 		{
 			int	sig = WTERMSIG(exit_sts);
 			if (sig == SIGINT)
-				ft_putstr_fd("\n", 1);
+				ft_putstr_fd("\n", STDOUT_FILENO);
 			else if (sig == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", 1);
+				ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
 			cmd->sts.process_status = sig + 128;
 		}
 		ms_term_set(cmd, 0);
