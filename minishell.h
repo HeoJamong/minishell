@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 23:17:55 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/19 23:01:03 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_env_var
 // util_func
 char		*ft_realloc(char *ptr, int size);
 void		ft_line_split_free(char **tmp);
-long long	ft_atol(const char *string);
+long long	ft_atoll(const char *string);
 
 // term_set
 void		ms_term_set(t_cmd *cmd, int i);
@@ -113,12 +113,17 @@ t_plst		*ms_lstlast(t_plst *lst);
 void		ms_lstadd_back(t_plst **lst, t_plst *new);
 
 // redirections
-int			input_redirect(char *str);
-int			output_redirect(char *str);
-int			here_doc(char *last_word, t_cmd *cmd);
-int			here_doc_pipe(char	*here_line, t_cmd *cmd);
-int			ms_heredoc_true_input(t_cmd *cmd);
-int			ms_rdr_true_output(t_cmd *cmd);
+// int			input_redirect(char *str);
+// int			output_redirect(char *str);
+// int			here_doc(char *last_word, t_cmd *cmd);
+// int			here_doc_pipe(char	*here_line, t_cmd *cmd);
+int			ms_rdr_input_true(t_cmd *cmd);
+int			ms_rdr_output_true(t_cmd *cmd);
+void		rdr_input_var_init(int *i, t_plst *tmp);
+void		rdr_input_fd_init(t_plst *tmp);
+void		ms_error_print(int i);
+int			rdr_heredoc(t_cmd *cmd, t_plst *tmp, int *i, int k);
+int			rdr_file_input(t_cmd *cmd, t_plst *tmp, int *i, int k);
 
 // pipe_exec
 void		cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);

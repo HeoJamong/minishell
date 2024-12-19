@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 23:01:27 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/19 22:48:19 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 
 void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 {
+	void	*tmp_dir;
 	char	**path_split;
 	char	*path;
 	int		i = 0;
 
 	if (ft_strchr(tmp->pipe_split[0], '/'))
 	{
-		if (opendir(tmp->pipe_split[0]))
+		tmp_dir = opendir(tmp->pipe_split[0]);
+		if (tmp_dir)
 		{
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
 			ft_putendl_fd(": Is a directory", STDERR_FILENO);
 			exit (126);
 		}
+		free(tmp_dir);
 		if (access(tmp->pipe_split[0], X_OK) != 0)
 		{
 			if (access(tmp->pipe_split[0], F_OK) != 0)
@@ -61,6 +64,7 @@ void	cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp)
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(tmp->pipe_split[0], STDERR_FILENO);
 			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			exit (127);
 		}
 		path_split = ft_split(path, ':');
 		i = 0;
@@ -154,7 +158,7 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 		ft_line_split_free(cmd->line_split);
 		return ;
 	}
-	if (ms_heredoc_true_input(cmd))
+	if (ms_rdr_input_true(cmd))
 	{
 		ft_line_split_free(cmd->line_split);
 		tmp = cmd->pipe_lst;
@@ -168,7 +172,7 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 		}
 		return ;
 	}
-	if (ms_rdr_true_output(cmd))
+	if (ms_rdr_output_true(cmd))
 	{
 		ft_line_split_free(cmd->line_split);
 		tmp = cmd->pipe_lst;
