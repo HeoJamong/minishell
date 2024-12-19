@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 19:41:56 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/17 10:50:00 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/19 23:01:03 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	exit_max_num_check(t_plst *lst_tmp)
 		i++;
 	}
 	if (exit_num_check == 0)
-		exit(ft_atol(lst_tmp->pipe_split[1]));
+		exit(ft_atoll(lst_tmp->pipe_split[1]));
 	else
 		printf("올바른 값이 아님\n");
 }
@@ -56,7 +56,7 @@ void	eixt_minus_num_check(t_plst *lst_tmp)
 		i++;
 	}
 	if (exit_num_check == 0)
-		exit(ft_atol(lst_tmp->pipe_split[1]));
+		exit(ft_atoll(lst_tmp->pipe_split[1]));
 	else
 		printf("올바른 값이 아님\n");
 }
@@ -68,7 +68,7 @@ void	set_exit(int flag, t_plst *lst_tmp)
 	else if (flag == 1 && strlen(lst_tmp->pipe_split[1]) == 20)
 		eixt_minus_num_check(lst_tmp);
 	else if ((flag == 0 && strlen(lst_tmp->pipe_split[1]) < 19 && strlen(lst_tmp->pipe_split[1]) > 0) || (flag == 1 && strlen(lst_tmp->pipe_split[1]) < 20 && strlen(lst_tmp->pipe_split[1]) > 0))
-		exit(ft_atol(lst_tmp->pipe_split[1]));
+		exit(ft_atoll(lst_tmp->pipe_split[1]));
 }
 
 int	start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd)

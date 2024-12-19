@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 17:58:36 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 22:10:32 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/19 17:13:37 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	rdr_output_var_init(int *i, t_plst *tmp)
 	tmp->file_fd = 0;
 }
 
-int	ms_rdr_true_output(t_cmd *cmd)
+int	ms_rdr_output_true(t_cmd *cmd)
 {
 	t_plst	*tmp;
 	int		i;
