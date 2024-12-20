@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/17 11:46:09 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 14:49:47 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,19 @@ int	e_pointer_export_check(int e_pointer, char *str)
 
 int	change_env(t_cmd *cmd, char *str, int *i)
 {
+	int	return_value;
+
 	while ((cmd->envp)[*i])
 	{
-		if (check_env(str, (cmd->envp)[*i]))
+		return_value = check_env(str, (cmd->envp)[*i]);
+		if (return_value == 1)
 		{
 			free((cmd->envp)[*i]);
 			(cmd->envp)[*i] = ft_strdup(str);
 			return (1);
 		}
+		else if (return_value == 2)
+			return (2);
 		(*i)++;
 	}
 	return (0);
@@ -93,7 +98,7 @@ int	ft_export(char *str, t_cmd *cmd)
 	e_pointer = find_char_index(str, '=');
 	if (e_pointer_export_check(e_pointer, str) == 0)
 		return (0);
-	if (change_env(cmd, str, &i) == 1)
+	if (change_env(cmd, str, &i) == 1 || change_env(cmd, str, &i) == 2)
 		return (1);
 	new = malloc(sizeof(char *) * (i + 2));
 	if (new == NULL)

@@ -6,112 +6,96 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 20:20:28 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 14:55:27 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 
-void	start_pwd(t_cmd *cmd)
+void	start_pwd(t_cmd *c)
 {
-	char *currdir;
+	char	*currdir;
 
 	currdir = getcwd(NULL, 0);
 	if (currdir == NULL)
 		exit(EXIT_FAILURE);
 	printf("%s\n", currdir);
 	free(currdir);
-	cmd->sts.process_status = EXIT_SUCCESS;
+	c->sts.process_status = EXIT_SUCCESS;
 }
 
-void	start_echo(t_plst *lst_tmp, t_cmd *cmd, int ca_cnt)
+void	start_echo(t_plst *l, t_cmd *c, int ca_cnt)
 {
-	int i = 1;
+	int	i;
 
-	if (ft_strnstr(lst_tmp->pipe_split[1], "-n", 2) \
-		&& ft_strlen(lst_tmp->pipe_split[1]) == 2)
+	i = 1;
+	if (sn(l->pipe_split[1], "-n", 2) \
+		&& sl(l->pipe_split[1]) == 2)
 	{
 		i = 2;
 		while (i + 1 < ca_cnt)
-			printf("%s ", lst_tmp->pipe_split[i++]);
-		printf("%s", lst_tmp->pipe_split[i]);
+			printf("%s ", l->pipe_split[i++]);
+		printf("%s", l->pipe_split[i]);
 	}
 	else
 	{
-		if (lst_tmp->pipe_split[1] == NULL)
+		if (l->pipe_split[1] == NULL)
 			printf("\n");
 		else
 		{
 			while (i + 1 < ca_cnt)
-				printf("%s ", lst_tmp->pipe_split[i++]);
-			printf("%s\n", lst_tmp->pipe_split[i]);
+				printf("%s ", l->pipe_split[i++]);
+			printf("%s\n", l->pipe_split[i]);
 		}
 	}
-	cmd->sts.process_status = EXIT_SUCCESS;
+	c->sts.process_status = EXIT_SUCCESS;
 }
 
-void	start_export(t_plst *lst_tmp, t_cmd *cmd)
+void	start_export(t_plst *l, t_cmd *c)
 {
-	if (ft_export(lst_tmp->pipe_split[1], cmd) == 0)
+	if (ft_export(l->pipe_split[1], c) == 0)
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-		ft_putstr_fd(lst_tmp->pipe_split[1], STDERR_FILENO);
+		ft_putstr_fd(l->pipe_split[1], STDERR_FILENO);
 		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-		cmd->sts.process_status = EXIT_FAILURE;
+		c->sts.process_status = EXIT_FAILURE;
 	}
 	else
-		cmd->sts.process_status = EXIT_SUCCESS;
+		c->sts.process_status = EXIT_SUCCESS;
 }
 
-int ms_builtin_func(t_cmd *cmd, t_plst *lst_tmp)
+void	start_unset(t_cmd *c, t_plst *l)
 {
-	int ca_cnt = 0;
+	if (l->pipe_split[1] != NULL)
+		ft_unset(l->pipe_split[1], c);
+	c->sts.process_status = EXIT_SUCCESS;
+}
 
-	if (lst_tmp->pipe_split[0] == NULL)
+int	ms_builtin_func(t_cmd *c, t_plst *l)
+{
+	if (l->pipe_split[0] == NULL)
 		return (0);
-	while (lst_tmp->pipe_split[ca_cnt])
-		ca_cnt++;
-	if (ft_strnstr(lst_tmp->pipe_split[0], "cd", 2) && ft_strlen(lst_tmp->pipe_split[0]) == 2)
+	count_ca_cnt(l);
+	if (sn(l->pipe_split[0], "cd", 2) && sl(l->pipe_split[0]) == 2)
+		start_cd(c, l, l->ca_cnt);
+	else if (sn(l->pipe_split[0], "pwd", 3) && sl(l->pipe_split[0]) == 3)
+		start_pwd(c);
+	else if (sn(l->pipe_split[0], "echo", 4) && sl(l->pipe_split[0]) == 4)
+		start_echo(l, c, l->ca_cnt);
+	else if (sn(l->pipe_split[0], "exit", 4) && sl(l->pipe_split[0]) == 4)
+		start_exit(&l->ca_cnt, l, c);
+	else if (sn(l->pipe_split[0], "export", 6) && sl(l->pipe_split[0]) == 6)
 	{
-		start_cd(cmd, lst_tmp, ca_cnt);
-		return (0);
-	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "pwd", 3) && ft_strlen(lst_tmp->pipe_split[0]) == 3)
-	{
-		start_pwd(cmd);
-		return (0);
-	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "echo", 4) && ft_strlen(lst_tmp->pipe_split[0]) == 4)
-	{
-		start_echo(lst_tmp, cmd, ca_cnt);
-		return (0);
-	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "exit", 4) && ft_strlen(lst_tmp->pipe_split[0]) == 4)
-	{
-		start_exit(&ca_cnt, lst_tmp, cmd);
-		return (0);
-	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "export", 6) && ft_strlen(lst_tmp->pipe_split[0]) == 6)
-	{
-		if (ca_cnt == 1)
-			print_export(cmd->envp);
+		if (l->ca_cnt == 1)
+			print_export(c->envp);
 		else
-			start_export(lst_tmp, cmd);
-		return (0);
+			start_export(l, c);
 	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "unset", 5) && ft_strlen(lst_tmp->pipe_split[0]))
-	{
-		if (lst_tmp->pipe_split[1] != NULL)
-			ft_unset(lst_tmp->pipe_split[1], cmd);
-		cmd->sts.process_status = EXIT_SUCCESS;
-		return (0);
-	}
-	else if (ft_strnstr(lst_tmp->pipe_split[0], "env", 3))
-	{
-		print_env(cmd->envp);
-		cmd->sts.process_status = EXIT_SUCCESS;
-		return (0);
-	}
-	return (1);
+	else if (sn(l->pipe_split[0], "unset", 5) && sl(l->pipe_split[0]))
+		start_unset(c, l);
+	else if (sn(l->pipe_split[0], "env", 3))
+		c->sts.process_status = print_env(c->envp);
+	else
+		return (1);
+	return (0);
 }

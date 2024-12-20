@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_lst.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 22:09:49 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/12 16:03:08 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 21:02:25 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_plst	*ms_lstnew(void)
 	ptr->next = NULL;
 	ptr->pipe_split = NULL;
 	ptr->heredoc_fd = NULL;
+	ptr->ca_cnt = 0;
 	return (ptr);
 }
 

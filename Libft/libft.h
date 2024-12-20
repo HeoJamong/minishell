@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42gyeongsa      +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 17:01:01 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/03/11 22:31:54 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 20:38:56 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef LIBFT_H
 # define LIBFT_H
 
@@ -50,6 +51,9 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
+int		sl(const char *string);
+char	*sn(const char *big, const char *little, size_t len);
+
 typedef struct s_list
 {
 	void			*content;

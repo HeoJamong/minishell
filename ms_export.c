@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 11:45:12 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/17 11:46:53 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 14:45:57 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_ispossible_export(int c)
 	return (0);
 }
 
-void	print_export(char **env)
+int	print_export(char **env)
 {
 	int	i;
 
@@ -30,9 +30,10 @@ void	print_export(char **env)
 		printf("%s\n", env[i]);
 		i++;
 	}
+	return (0);
 }
 
-void	print_env(char **env)
+int	print_env(char **env)
 {
 	int	i;
 
@@ -42,6 +43,7 @@ void	print_env(char **env)
 		printf("%s\n", env[i]);
 		i++;
 	}
+	return (EXIT_SUCCESS);
 }
 
 int	check_env(char *str, char *env)
@@ -54,6 +56,10 @@ int	check_env(char *str, char *env)
 		i++;
 	if (i == 0)
 		return (0);
+	if (str[i] == '\0' && env[i] == '=')
+		return(2);
+	if (str[i + 1] != '\0')
+		return (1);
 	if (((str[i] == '=') && (env[i] == '=')))
 		return (1);
 	return (0);
