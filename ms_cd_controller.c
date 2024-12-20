@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 20:27:19 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/17 20:29:30 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:34:58 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	cd_home_error_controller(t_plst *lst_tmp, t_cmd *cmd)
 {
 	int		dir;
 	char	*tmp;
+
 	if (lst_tmp->pipe_split[1][1] != '/')
 	{
 		cd_hmoe_error(lst_tmp, cmd);
@@ -48,7 +49,8 @@ int	cd_home_error_controller(t_plst *lst_tmp, t_cmd *cmd)
 	}
 	else
 	{
-		tmp = ft_strjoin(ft_strdup(getenv("HOME")), &(lst_tmp->pipe_split[1][1]));
+		tmp = ft_strjoin(ft_strdup(getenv("HOME")), \
+			&(lst_tmp->pipe_split[1][1]));
 		dir = chdir(tmp);
 		if (dir)
 		{
@@ -60,7 +62,7 @@ int	cd_home_error_controller(t_plst *lst_tmp, t_cmd *cmd)
 	return (1);
 }
 
-int	cd_tild_cntroller(t_plst  *lst_tmp, t_cmd *cmd)
+int	cd_tild_cntroller(t_plst *lst_tmp, t_cmd *cmd)
 {
 	if (ft_strlen(lst_tmp->pipe_split[1]) == 1)
 		chdir(getenv("HOME"));
