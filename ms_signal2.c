@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_signal.c                                        :+:      :+:    :+:   */
+/*   ms_signal2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 20:58:33 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/13 22:17:55 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 14:44:59 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,6 @@ static void	ms_change_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static void	ms_current_signal(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
 static void	ms_wait_signal(void)
 {
 	signal(SIGINT, wait_signal_handler);
@@ -61,10 +55,4 @@ void	ms_term_set(t_cmd *cmd, int i)
 	else if (i == 1)
 		ms_wait_signal();
 	tcsetattr(0, TCSANOW, &cmd->term.change_term);
-}
-
-void	ms_term_reset(t_cmd *cmd)
-{
-	ms_current_signal();
-	tcsetattr(0, TCSANOW, &cmd->term.current_term);
 }

@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:46:02 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 19:52:23 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:15:04 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ void	line_token_str(t_cmd *cmd, char *line, int *line_i, int *i)
 	char	*tmp;
 
 	cmd->line_split[*line_i] = ms_line_tokenizing_str(cmd, line, i);
-	if (cmd->line_split[*line_i] == NULL)
-		exit (EXIT_FAILURE);
 	while (ft_strchr(" |><", line[*i]) == NULL && line[*i])
 	{
 		if (line[*i] == DOUBLE_QUOTE || line[*i] == SINGLE_QUOTE)

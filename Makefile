@@ -5,15 +5,16 @@ NAME =	minishell
 SRC =	main.c \
 		ms_lst.c \
 		ms_utils.c \
-		ms_signal.c \
+		ms_signal1.c \
+		ms_signal2.c \
 		ms_replace_env.c \
 		ms_env.c \
 		ms_unset.c \
 		ms_line_token1.c \
 		ms_line_token2.c \
 		ms_line_token_utils.c \
-		ms_redirections.c \
-		ms_rdr_input.c \
+		ms_rdr_input1.c \
+		ms_rdr_input2.c \
 		ms_rdr_output.c \
 		ms_pipe_split.c \
 		ms_pipe_exec.c \

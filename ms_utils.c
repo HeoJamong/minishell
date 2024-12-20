@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 14:52:15 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:20:23 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_envchr(char *env, char *str)
 	int	i;
 
 	i = 0;
-	while (env[i] != '=')
+	while (env[i] != '=' && env[i])
 	{
 		if (env[i] != str[i])
 			return (NULL);
@@ -51,7 +51,7 @@ char	*ft_realloc(char *ptr, int size)
 	return (tmp);
 }
 
-long long	ft_atol(const char *string)
+long long	ft_atoll(const char *str)
 {
 	int			minus;
 	int			i;
@@ -60,18 +60,18 @@ long long	ft_atol(const char *string)
 	minus = 1;
 	i = 0;
 	c = 0;
-	while ((9 <= string[i] && string[i] <= 13) || string[i] == 32)
+	while ((9 <= str[i] && str[i] <= 13) || str[i] == 32)
 		i++;
-	if (string[i] == '-' || string[i] == '+')
+	if (str[i] == '-' || str[i] == '+')
 	{
-		if (string[i] == '-')
+		if (str[i] == '-')
 			minus *= -1;
 		i++;
 	}
-	while ('0' <= string[i] && string[i] <= '9')
+	while ('0' <= str[i] && str[i] <= '9')
 	{
 		c *= 10;
-		c = c + (string[i] - '0');
+		c = c + (str[i] - '0');
 		i++;
 	}
 	return ((minus * c) % 256);
