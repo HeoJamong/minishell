@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_rdr_output.c                                    :+:      :+:    :+:   */
+/*   ms_rdr_output2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 17:58:36 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:20:07 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:50:51 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,42 +118,6 @@ int	rdr_file_output_append(t_plst *tmp, int *i, int k)
 			k++;
 		}
 		tmp->pipe_split[k - 2] = NULL;
-	}
-	return (0);
-}
-
-void	rdr_output_var_init(int *i, t_plst *tmp)
-{
-	*i = 0;
-	tmp->rdr_true = 0;
-	tmp->file_fd = 0;
-}
-
-int	ms_rdr_output_true(t_cmd *cmd)
-{
-	t_plst	*tmp;
-	int		i;
-
-	tmp = cmd->pipe_lst;
-	while (tmp)
-	{
-		rdr_output_var_init(&i, tmp);
-		while (tmp->pipe_split[i])
-		{
-			if (ft_strnstr(tmp->pipe_split[i], ">", 1) && ft_strlen(tmp->pipe_split[i]) == 1)
-			{
-				if (rdr_file_output(tmp, &i, 0))
-					return (1);
-			}
-			else if (ft_strnstr(tmp->pipe_split[i], ">>", 2) && ft_strlen(tmp->pipe_split[i]) == 2)
-			{
-				if (rdr_file_output_append(tmp, &i, 0))
-					return (1);
-			}
-			else
-				i++;
-		}
-		tmp = tmp->next;
 	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:12:02 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:43:56 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 		ft_line_split_free(cmd->line_split);
 		return ;
 	}
-	if (ms_rdr_input_true(cmd))
+	if (ms_rdr_input_true(cmd, 0))
 	{
 		ft_line_split_free(cmd->line_split);
 		tmp = cmd->pipe_lst;
@@ -172,7 +172,7 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 		}
 		return ;
 	}
-	if (ms_rdr_output_true(cmd))
+	if (ms_rdr_output_true(cmd, 0))
 	{
 		ft_line_split_free(cmd->line_split);
 		tmp = cmd->pipe_lst;
