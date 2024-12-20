@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/20 16:44:04 by jheo              #+#    #+#             */
+/*   Updated: 2024/12/20 16:44:20 by jheo             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	cd_no_dir_error(t_plst *lst_tmp, t_cmd *cmd, char *tmp)
@@ -26,7 +38,6 @@ int	cd_slash_error(t_plst *lst_tmp, t_cmd *cmd)
 	}
 	return (1);
 }
-
 
 int	cd_to_ca_cnt_controller(int ca_cnt, t_cmd *cmd)
 {
@@ -60,7 +71,8 @@ int	cd_another_error(t_plst *lst_tmp, t_cmd *cmd)
 
 int	start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt)
 {
-	if ((ca_cnt > 0 || ca_cnt <= 2) && cd_to_ca_cnt_controller(ca_cnt, cmd) == 0)
+	if ((ca_cnt > 0 || ca_cnt <= 2) && \
+	cd_to_ca_cnt_controller(ca_cnt, cmd) == 0)
 		return (0);
 	else if (strncmp("~", lst_tmp->pipe_split[1], 1) == 0)
 	{

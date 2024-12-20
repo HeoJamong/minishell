@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:20:23 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:50:25 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ long long	ft_atoll(const char *str)
 	}
 	return ((minus * c) % 256);
 }
+
 void	count_ca_cnt(t_plst *l)
 {
 	while (l->pipe_split[l->ca_cnt])

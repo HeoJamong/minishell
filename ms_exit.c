@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 19:41:56 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/19 23:01:03 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 16:43:41 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	exit_num_error_print(t_plst *plst, t_cmd *cmd)
 	ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	cmd->sts.process_status = 2;
 	return (0);
-
 }
 
 void	exit_max_num_check(t_plst *lst_tmp)
@@ -33,7 +32,7 @@ void	exit_max_num_check(t_plst *lst_tmp)
 	{
 		exit_num_check = max_exit_num_check(lst_tmp->pipe_split[1][i], i);
 		if (exit_num_check == 1)
-			break;
+			break ;
 		i++;
 	}
 	if (exit_num_check == 0)
@@ -52,7 +51,7 @@ void	eixt_minus_num_check(t_plst *lst_tmp)
 	{
 		exit_num_check = min_exit_num_check(lst_tmp->pipe_split[1][i], i);
 		if (exit_num_check == 1)
-			break;
+			break ;
 		i++;
 	}
 	if (exit_num_check == 0)
@@ -67,7 +66,10 @@ void	set_exit(int flag, t_plst *lst_tmp)
 		exit_max_num_check(lst_tmp);
 	else if (flag == 1 && strlen(lst_tmp->pipe_split[1]) == 20)
 		eixt_minus_num_check(lst_tmp);
-	else if ((flag == 0 && strlen(lst_tmp->pipe_split[1]) < 19 && strlen(lst_tmp->pipe_split[1]) > 0) || (flag == 1 && strlen(lst_tmp->pipe_split[1]) < 20 && strlen(lst_tmp->pipe_split[1]) > 0))
+	else if ((flag == 0 && strlen(lst_tmp->pipe_split[1]) < 19 \
+	&& strlen(lst_tmp->pipe_split[1]) > 0) || \
+	(flag == 1 && strlen(lst_tmp->pipe_split[1]) < 20 && \
+	strlen(lst_tmp->pipe_split[1]) > 0))
 		exit(ft_atoll(lst_tmp->pipe_split[1]));
 }
 
