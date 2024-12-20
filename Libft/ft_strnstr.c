@@ -3,16 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 18:36:33 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/16 18:00:20 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/17 20:36:54 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	k;
+	char	*big1;
+	char	*little1;
+
+	if (big == NULL || len == 0)
+		return (NULL);
+	big1 = (char *)big;
+	little1 = (char *)little;
+	if (*little == 0)
+		return (big1);
+	i = 0;
+	while (big1[i] && i < len)
+	{
+		k = 0;
+		while (big1[i + k] == little1[k] && i + k < len)
+		{
+			k++;
+			if (little1[k] == 0)
+				return (&big1[i]);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+char	*sn(const char *big, const char *little, size_t len)
 {
 	size_t	i;
 	size_t	k;

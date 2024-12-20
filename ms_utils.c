@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 23:07:41 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:20:23 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,9 @@ long long	ft_atoll(const char *str)
 		i++;
 	}
 	return ((minus * c) % 256);
+}
+void	count_ca_cnt(t_plst *l)
+{
+	while (l->pipe_split[l->ca_cnt])
+		l->ca_cnt++;
 }

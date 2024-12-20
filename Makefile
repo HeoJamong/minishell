@@ -21,7 +21,9 @@ SRC =	main.c \
 		ms_builtin_func.c \
 		ms_exit.c \
 		ms_exit_num_check.c \
-		ms_export.c
+		ms_export.c \
+		ms_cd.c \
+		ms_cd_controller.c
 
 OBJ =	$(SRC:.c=.o)
 

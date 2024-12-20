@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_pipe_exec.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 18:20:05 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 22:57:53 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:16:47 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds)
 	i = 0;
 	pid = fork();
 	if (pid == 0)
-	{	
+	{
 		dup2(fd[0], STDIN_FILENO);
 		while (i < cmd->pipe_cnt)
 		{
@@ -123,7 +123,7 @@ void	pipe_exec(t_cmd *cmd, t_plst *tmp, int **fds, int *pid_idx)
 	while (tmp)
 	{
 		if (tmp == cmd->pipe_lst)
-		{	
+		{
 			pid_idx[i] = pipe_exec_begin(cmd, tmp, fds[i], fds);
 			close(fds[i][1]);
 		}
