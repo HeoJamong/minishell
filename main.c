@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 22:48:19 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 14:47:17 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,19 +206,30 @@ void	ms_line_parsing_exec(t_cmd *cmd)
 	}
 }
 
+void	main_var_set(t_cmd *cmd, t_fd *fd, char **envp)
+{
+	fd->input = dup(STDIN_FILENO);
+	fd->output = dup(STDOUT_FILENO);
+	cmd->envp = set_env(envp);
+	cmd->sts.process_status = EXIT_SUCCESS;
+}
+
+void	main_var_reset(t_cmd *cmd, t_fd *fd)
+{
+	dup2(fd->input, STDIN_FILENO);
+	dup2(fd->output, STDOUT_FILENO);
+	free(cmd->line);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_cmd	cmd;
-	int		input_fd;
-	int		output_fd;
+	t_fd	fd;
 
 	(void)av;
 	if (ac != 1)
 		return (0);
-	input_fd = dup(STDIN_FILENO);
-	output_fd = dup(STDOUT_FILENO);
-	cmd.envp = set_env(envp);
-	cmd.sts.process_status = EXIT_SUCCESS;
+	main_var_set(&cmd, &fd, envp);
 	while (1)
 	{
 		ms_term_set(&cmd, 0);
@@ -230,9 +241,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(cmd.line);
 		ms_line_parsing_exec(&cmd);
-		dup2(input_fd, STDIN_FILENO);
-		dup2(output_fd, STDOUT_FILENO);
-		free(cmd.line);
+		main_var_reset(&cmd, &fd);
 	}
 	return (0);
 }

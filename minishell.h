@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 23:01:03 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 14:37:58 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
 
+typedef struct s_fd
+{
+	int	input;
+	int	output;
+}	t_fd;
 typedef struct s_rdr
 {
 	char	*line;
