@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:14:45 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 15:51:40 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,17 +118,15 @@ t_plst		*ms_lstlast(t_plst *lst);
 void		ms_lstadd_back(t_plst **lst, t_plst *new);
 
 // redirections
-// int			input_redirect(char *str);
-// int			output_redirect(char *str);
-// int			here_doc(char *last_word, t_cmd *cmd);
-// int			here_doc_pipe(char	*here_line, t_cmd *cmd);
-int			ms_rdr_input_true(t_cmd *cmd);
-int			ms_rdr_output_true(t_cmd *cmd);
+int			ms_rdr_input_true(t_cmd *cmd, int i);
+int			ms_rdr_output_true(t_cmd *cmd, int i);
 void		rdr_input_var_init(int *i, t_plst *tmp);
 void		rdr_input_fd_init(t_plst *tmp);
 void		ms_error_print(int i);
 int			rdr_heredoc(t_cmd *cmd, t_plst *tmp, int *i, int k);
 int			rdr_file_input(t_cmd *cmd, t_plst *tmp, int *i, int k);
+int			rdr_file_output(t_plst *tmp, int *i, int k);
+int			rdr_file_output_append(t_plst *tmp, int *i, int k);
 
 // pipe_exec
 void		cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);

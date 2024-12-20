@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_rdr_input2.c                                    :+:      :+:    :+:   */
+/*   ms_rdr_input1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 21:53:51 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:42:25 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,9 @@ void	rdr_input_var_init(int *i, t_plst *tmp)
 	tmp->heredoc_fd = NULL;
 }
 
-int	ms_rdr_input_true(t_cmd *cmd)
+int	ms_rdr_input_true(t_cmd *cmd, int i)
 {
 	t_plst	*tmp;
-	int		i;
 
 	tmp = cmd->pipe_lst;
 	while (tmp)
@@ -49,12 +48,13 @@ int	ms_rdr_input_true(t_cmd *cmd)
 		rdr_input_var_init(&i, tmp);
 		while (tmp->pipe_split[i])
 		{
-			if (ft_strnstr(tmp->pipe_split[i], "<", 1) && ft_strlen(tmp->pipe_split[i]) == 1)
+			if (sn(tmp->pipe_split[i], "<", 1) && sl(tmp->pipe_split[i]) == 1)
 			{
 				if (rdr_file_input(cmd, tmp, &i, 0))
 					return (1);
 			}
-			else if (ft_strnstr(tmp->pipe_split[i], "<<", 2) && ft_strlen(tmp->pipe_split[i]) == 2)
+			else if (\
+			sn(tmp->pipe_split[i], "<<", 2) && sl(tmp->pipe_split[i]) == 2)
 			{
 				if (rdr_heredoc(cmd, tmp, &i, 0))
 					return (1);
