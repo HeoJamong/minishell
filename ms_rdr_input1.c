@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/22 21:12:48 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 21:53:00 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,19 @@ void	ms_error_print(int i)
 
 int	rdr_error_print(t_cmd *cmd, char *filename)
 {
-	if (access(filename, X_OK) != 0)
+	if (access(filename, F_OK) != 0)
 	{
-		if (access(filename, F_OK) != 0)
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-		}
-		else
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putendl_fd(": Permission denied", STDERR_FILENO);
-		}
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		cmd->sts.process_status = EXIT_FAILURE;
+		return (1);
+	}
+	else if (access(filename, R_OK) != 0)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putendl_fd(": Permission denied", STDERR_FILENO);
 		cmd->sts.process_status = EXIT_FAILURE;
 		return (1);
 	}
