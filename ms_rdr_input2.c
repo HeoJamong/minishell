@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_rdr_input1.c                                    :+:      :+:    :+:   */
+/*   ms_rdr_input2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/19 21:53:56 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 21:12:53 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,8 @@ int	rdr_input_file_open(t_cmd *cmd, t_plst *tmp, char *filename)
 
 	if (tmp->heredoc_fd)
 		rdr_input_fd_init(tmp);
-	if (access(filename, F_OK) == -1)
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(filename, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-		tmp->rdr_input_file = 1;
-		cmd->sts.process_status = EXIT_FAILURE;
+	if (rdr_error_print(cmd, filename))
 		return (1);
-	}
 	fd = (int *)malloc(sizeof(int) * 2);
 	if (fd == NULL)
 		exit (EXIT_FAILURE);

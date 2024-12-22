@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/22 20:48:19 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 21:13:27 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ int			ms_rdr_output_true(t_cmd *cmd, int i);
 void		rdr_input_var_init(int *i, t_plst *tmp);
 void		rdr_input_fd_init(t_plst *tmp);
 void		ms_error_print(int i);
+int			rdr_error_print(t_cmd *cmd, char *filename);
 int			rdr_heredoc(t_cmd *cmd, t_plst *tmp, int *i, int k);
 int			rdr_file_input(t_cmd *cmd, t_plst *tmp, int *i, int k);
 int			rdr_file_output(t_plst *tmp, int *i, int k);

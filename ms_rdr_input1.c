@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 20:36:53 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:42:25 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 21:12:48 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,28 @@ void	ms_error_print(int i)
 		ft_putstr_fd("syntax error near ", STDERR_FILENO);
 		ft_putendl_fd("unexpected token `newline'", STDERR_FILENO);
 	}
+}
+
+int	rdr_error_print(t_cmd *cmd, char *filename)
+{
+	if (access(filename, X_OK) != 0)
+	{
+		if (access(filename, F_OK) != 0)
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		}
+		else
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putendl_fd(": Permission denied", STDERR_FILENO);
+		}
+		cmd->sts.process_status = EXIT_FAILURE;
+		return (1);
+	}
+	return (0);
 }
 
 void	rdr_input_fd_init(t_plst *tmp)
