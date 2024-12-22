@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/22 17:42:40 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/22 20:48:19 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int			ft_unset(char *str, t_cmd *cmd);
 // tokenizer
 char		*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i);
 char		*ms_line_tokenizing_str(t_cmd *cmd, char *line, int *i);
-void		ms_line_tokenizer(t_cmd *cmd, char *line);
+int			ms_line_tokenizer(t_cmd *cmd, char *line, int i, int line_i);
 void		line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i);
 void		line_token_redirect(t_cmd *cmd, char *line, int *line_i, int *i);
 void		line_token_str(t_cmd *cmd, char *line, int *line_i, int *i);

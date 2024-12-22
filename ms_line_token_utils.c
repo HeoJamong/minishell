@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:33:09 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:54:57 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:28:51 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ char	*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i)
 	if (line[*i] == 0)
 	{
 		free(ptr);
+		ptr = NULL;
 		return (NULL);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:56:11 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/17 22:53:49 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:48:32 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,17 @@ void	line_token_var_init(t_cmd *cmd, int *i, int *line_i)
 	cmd->sts.pipe_true = 0;
 	*i = 0;
 	*line_i = 0;
+}
+
+void	ms_line_split_free(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->line_split[i])
+		free(cmd->line_split[i++]);
+	free(cmd->line_split);
+	cmd->line_split = NULL;
 }
 
 void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
@@ -32,7 +43,7 @@ void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
 			if (tmp == NULL)
 			{
 				cmd->line_split[++(*line_i)] = NULL;
-				ft_line_split_free(cmd->line_split);
+				ms_line_split_free(cmd);
 				return ;
 			}
 		}
@@ -47,11 +58,8 @@ void	line_token_quote(t_cmd *cmd, char *line, int *line_i, int *i)
 		(*line_i)++;
 }
 
-void	ms_line_tokenizer(t_cmd *cmd, char *line)
+int	ms_line_tokenizer(t_cmd *cmd, char *line, int i, int line_i)
 {
-	int	i;
-	int	line_i;
-
 	line_token_var_init(cmd, &i, &line_i);
 	cmd->line_split = (char **)malloc(sizeof(char *) * (ft_strlen(line) + 1));
 	if (cmd->line_split == NULL)
@@ -62,7 +70,11 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 			while (line[i] == ' ')
 				i++;
 		else if (line[i] == DOUBLE_QUOTE || line[i] == SINGLE_QUOTE)
+		{
 			line_token_quote(cmd, line, &line_i, &i);
+			if (cmd->line_split == NULL)
+				return (1);
+		}
 		else if (line[i] == '|')
 			cmd->line_split[line_i++] = ms_line_tokenizing_str(cmd, line, &i);
 		else if (line[i] == '>' || line[i] == '<')
@@ -72,4 +84,5 @@ void	ms_line_tokenizer(t_cmd *cmd, char *line)
 	}
 	cmd->line_split[line_i] = NULL;
 	cmd->line_i = line_i;
+	return (0);
 }
