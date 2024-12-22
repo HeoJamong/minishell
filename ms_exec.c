@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 21:09:00 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 22:45:18 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/22 17:42:56 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	exec_fd_dup(t_plst *tmp)
 void	exec_exit_sts(t_cmd *cmd, t_plst *tmp, int pid, int exit_sts)
 {
 	int	sig;
-	
+
 	if (ms_builtin_func(cmd, tmp))
 	{
 		pid = (int)fork();
