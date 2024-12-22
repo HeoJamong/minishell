@@ -6,7 +6,7 @@
 /*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:51:40 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/20 21:29:28 by jinsecho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@
 # include <dirent.h>
 # define SINGLE_QUOTE 39
 # define DOUBLE_QUOTE 34
+
+typedef struct s_pipefd
+{
+	int	*c;
+	int	*p;
+}	t_pipefd;
 
 typedef struct s_fd
 {
@@ -129,22 +135,28 @@ int			rdr_file_output(t_plst *tmp, int *i, int k);
 int			rdr_file_output_append(t_plst *tmp, int *i, int k);
 
 // pipe_exec
+int			ms_exec(t_cmd *cmd);
+void		ms_line_parsing_exec(t_cmd *cmd);
 void		cmd_pipe_exec(t_cmd *cmd, t_plst *tmp);
 void		cmd_path_cat_exec(t_cmd *cmd, t_plst *tmp);
+void		pipe_exec(t_cmd *cmd, t_plst *tmp, int **fds, int *pid_idx);
+int			pipe_exec_begin(t_cmd *cmd, t_plst *tmp, int *fd, int **fds);
+int			pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds);
+int			pipe_exec_middle(t_cmd *cmd, t_plst *tmp, t_pipefd *fd, int **fds);
 
 // builtin_func
-int	ms_builtin_func(t_cmd *cmd, t_plst *tmp);
-int	start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd);
-int exit_num_isdigit(char *num, int *flag);
-int max_exit_num_check(char num, int i);
-int min_exit_num_check(char num, int i);
-int	print_export(char **env);
-int	check_ispossible_export(int c);
-int	print_env(char **env);
-int	check_env(char *str, char *env);
-int	find_char_index(char *str, char c);
-int	start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
-int	cd_tild_cntroller(t_plst  *lst_tmp, t_cmd *cmd);
-void	count_ca_cnt(t_plst *l);
+int			ms_builtin_func(t_cmd *cmd, t_plst *tmp);
+int			start_exit(int *ca_cnt, t_plst *lst_tmp, t_cmd *cmd);
+int			exit_num_isdigit(char *num, int *flag);
+int			max_exit_num_check(char num, int i);
+int			min_exit_num_check(char num, int i);
+int			print_export(char **env);
+int			check_ispossible_export(int c);
+int			print_env(char **env);
+int			check_env(char *str, char *env);
+int			find_char_index(char *str, char c);
+int			start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
+int			cd_tild_cntroller(t_plst *lst_tmp, t_cmd *cmd);
+void		count_ca_cnt(t_plst *l);
 
 #endif
