@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 19:41:56 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/20 16:43:41 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/22 20:27:05 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	exit_num_error_print(t_plst *plst, t_cmd *cmd)
 	return (0);
 }
 
-void	exit_max_num_check(t_plst *lst_tmp)
+void	exit_max_num_check(t_plst *lst_tmp, t_cmd *cmd)
 {
 	int	i;
 	int	exit_num_check;
@@ -38,10 +38,10 @@ void	exit_max_num_check(t_plst *lst_tmp)
 	if (exit_num_check == 0)
 		exit(ft_atoll(lst_tmp->pipe_split[1]));
 	else
-		printf("올바른 값이 아님\n");
+		exit(exit_num_error_print(lst_tmp, cmd));
 }
 
-void	eixt_minus_num_check(t_plst *lst_tmp)
+void	eixt_minus_num_check(t_plst *lst_tmp, t_cmd *cmd)
 {
 	int	i;
 	int	exit_num_check;
@@ -57,20 +57,22 @@ void	eixt_minus_num_check(t_plst *lst_tmp)
 	if (exit_num_check == 0)
 		exit(ft_atoll(lst_tmp->pipe_split[1]));
 	else
-		printf("올바른 값이 아님\n");
+		exit(exit_num_error_print(lst_tmp, cmd));
 }
 
-void	set_exit(int flag, t_plst *lst_tmp)
+void	set_exit(int flag, t_plst *lst_tmp, t_cmd *cmd)
 {
 	if (flag == 0 && strlen(lst_tmp->pipe_split[1]) == 19)
-		exit_max_num_check(lst_tmp);
+		exit_max_num_check(lst_tmp, cmd);
 	else if (flag == 1 && strlen(lst_tmp->pipe_split[1]) == 20)
-		eixt_minus_num_check(lst_tmp);
+		eixt_minus_num_check(lst_tmp, cmd);
 	else if ((flag == 0 && strlen(lst_tmp->pipe_split[1]) < 19 \
 	&& strlen(lst_tmp->pipe_split[1]) > 0) || \
 	(flag == 1 && strlen(lst_tmp->pipe_split[1]) < 20 && \
 	strlen(lst_tmp->pipe_split[1]) > 0))
 		exit(ft_atoll(lst_tmp->pipe_split[1]));
+	else if (strlen(lst_tmp->pipe_split[1]) > 20)
+		exit(exit_num_error_print(lst_tmp, cmd));
 }
 
 int	start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd)
@@ -85,10 +87,10 @@ int	start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd)
 		if (exit_num_isdigit(lst_tmp->pipe_split[1], &flag) == 0)
 		{
 			if (exit_num_error_print(lst_tmp, cmd) == 0)
-				return (0);
+				exit (2);
 		}
 		else
-			set_exit(flag, lst_tmp);
+			set_exit(flag, lst_tmp, cmd);
 	}
 	else
 	{

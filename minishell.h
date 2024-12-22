@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
 /*   Updated: 2024/12/22 20:48:19 by jinsecho         ###   ########.fr       */
@@ -145,18 +145,18 @@ int			pipe_exec_end(t_cmd *cmd, t_plst *tmp, int *fd, int **fds);
 int			pipe_exec_middle(t_cmd *cmd, t_plst *tmp, t_pipefd *fd, int **fds);
 
 // builtin_func
-int		ms_builtin_func(t_cmd *cmd, t_plst *tmp);
-int		start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd);
-int		exit_num_isdigit(char *num, int *flag);
-int 	max_exit_num_check(char num, int i);
-int 	min_exit_num_check(char num, int i);
-int		print_export(char **env);
-int		check_ispossible_export(int c);
-int		print_env(char **env);
-int		check_env(char *str, char *env);
-int		find_char_index(char *str, char c);
-int		start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
-int		cd_tild_cntroller(t_plst  *lst_tmp, t_cmd *cmd);
-void	count_ca_cnt(t_plst *l);
+int			ms_builtin_func(t_cmd *cmd, t_plst *tmp);
+int			start_exit(int	*ca_cnt, t_plst *lst_tmp, t_cmd *cmd);
+int			exit_num_isdigit(char *num, int *flag);
+int			max_exit_num_check(char num, int i);
+int			min_exit_num_check(char num, int i);
+int			print_export(char **env);
+int			check_ispossible_export(int c);
+int			print_env(char **env);
+int			check_env(char *str, char *env);
+int			find_char_index(char *str, char c);
+int			start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
+int			cd_tild_cntroller(t_plst *lst_tmp, t_cmd *cmd);
+void		count_ca_cnt(t_plst *l);
 
 #endif
