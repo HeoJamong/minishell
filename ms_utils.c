@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ms_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:17:30 by jinsecho          #+#    #+#             */
 /*   Updated: 2024/12/20 15:50:25 by jheo             ###   ########.fr       */
