@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/20 14:49:47 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/20 16:40:45 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	new_export(char *str, char **new, int index)
 	new[index + 1] = NULL;
 }
 
-
 int	e_pointer_export_check(int e_pointer, char *str)
 {
 	int	i;
@@ -47,10 +46,10 @@ int	e_pointer_export_check(int e_pointer, char *str)
 	i = 0;
 	if (e_pointer)
 	{
-		while(i < e_pointer)
+		while (i < e_pointer)
 		{
 			if (check_ispossible_export(str[i]) == 0)
-				return(0);
+				return (0);
 			i++;
 		}
 	}
@@ -59,7 +58,7 @@ int	e_pointer_export_check(int e_pointer, char *str)
 		while (str[i])
 		{
 			if (check_ispossible_export(str[i]) == 0)
-				return(0);
+				return (0);
 			i++;
 		}
 	}
