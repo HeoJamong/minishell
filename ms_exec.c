@@ -15,11 +15,7 @@
 void	exec_fd_dup(t_plst *tmp)
 {
 	if (tmp->heredoc_true)
-	{
 		dup2(tmp->heredoc_fd[0], STDIN_FILENO);
-		close(tmp->heredoc_fd[0]);
-		close(tmp->heredoc_fd[1]);
-	}
 	if (tmp->rdr_true)
 		dup2(tmp->file_fd, STDOUT_FILENO);
 }
@@ -31,8 +27,6 @@ void	exec_exit_sts(t_cmd *cmd, t_plst *tmp, int pid, int exit_sts)
 	if (ms_builtin_func(cmd, tmp))
 	{
 		pid = (int)fork();
-		if (pid == -1)
-			exit (EXIT_FAILURE);
 		if (pid == 0)
 		{
 			ms_term_reset(cmd, 0);
