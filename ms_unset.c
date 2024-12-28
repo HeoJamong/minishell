@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 16:29:07 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:49:00 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/23 21:42:40 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,18 @@ void	play_unset(char ***new, int len, int i, t_cmd *cmd)
 
 int	ft_unset(char *str, t_cmd *cmd)
 {
-	int		i;
 	char	**new;
 	int		len;
+	int		i;
 
 	len = ft_envplen(cmd->envp);
 	i = ft_contains(str, cmd->envp);
-	new = malloc(sizeof(char *) * (len));
 	if (i == -1)
 		return (0);
 	else
+	{
+		new = malloc(sizeof(char *) * (len));
 		play_unset(&new, len, i, cmd);
+	}
 	return (1);
 }

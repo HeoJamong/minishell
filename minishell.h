@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 17:27:52 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/22 21:13:27 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/26 22:36:12 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ typedef struct s_env_var
 // util_func
 char		*ft_realloc(char *ptr, int size);
 void		ft_line_split_free(char **tmp);
+void		ms_line_split_free(t_cmd *cmd);
 long long	ft_atoll(const char *string);
 
 // term_set
@@ -154,10 +155,11 @@ int			min_exit_num_check(char num, int i);
 int			print_export(char **env);
 int			check_ispossible_export(int c);
 int			print_env(char **env);
-int			check_env(char *str, char *env);
+int			check_env(char *str, char **env, int e_pointer);
 int			find_char_index(char *str, char c);
 int			start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt);
 int			cd_tild_cntroller(t_plst *lst_tmp, t_cmd *cmd);
+int			echo_cmd_check(t_plst *l);
 void		count_ca_cnt(t_plst *l);
 
 #endif

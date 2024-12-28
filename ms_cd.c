@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:44:04 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/20 16:44:20 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/23 21:27:26 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ int	start_cd(t_cmd *cmd, t_plst *lst_tmp, int ca_cnt)
 	if ((ca_cnt > 0 || ca_cnt <= 2) && \
 	cd_to_ca_cnt_controller(ca_cnt, cmd) == 0)
 		return (0);
+	else if (lst_tmp->pipe_split[1] == NULL)
+		chdir(getenv("HOME"));
 	else if (strncmp("~", lst_tmp->pipe_split[1], 1) == 0)
 	{
 		if (cd_tild_cntroller(lst_tmp, cmd) == 0)

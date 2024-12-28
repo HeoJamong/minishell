@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 11:45:12 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/20 16:41:58 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/26 22:07:22 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,41 +40,53 @@ int	print_env(char **env)
 	i = 0;
 	while (env[i])
 	{
-		printf("%s\n", env[i]);
+		if (ft_strchr(env[i], '='))
+			printf("%s\n", env[i]);
 		i++;
 	}
 	return (EXIT_SUCCESS);
 }
 
-int	check_env(char *str, char *env)
+int	init_env(char *str, char **env, int e_pointer)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] && env[i] && (str[i] == env[i]) && \
-	(str[i] != '=') && (env[i] != '='))
-		i++;
-	if (i == 0)
-		return (0);
-	if (str[i] == '\0' && env[i] == '=')
-		return (2);
-	if (str[i + 1] != '\0')
-		return (1);
-	if (((str[i] == '=') && (env[i] == '=')))
-		return (1);
+	if (e_pointer != 0)
+	{
+		while (env[i])
+		{
+			if (ft_strncmp(env[i], str, e_pointer) == 0)
+				return (i);
+			i++;
+		}
+	}
+	else
+	{
+		while (env[i])
+		{
+			if (ft_strncmp(env[i], str, sl(str)) == 0)
+				return (i);
+			i++;
+		}
+	}
 	return (0);
 }
 
-int	find_char_index(char *str, char c)
+int	check_env(char *str, char **env, int e_pointer)
 {
-	int	i;
+	int	env_p;
 
-	i = 0;
-	while (str[i])
+	env_p = init_env(str, env, e_pointer);
+	if (e_pointer != 0)
 	{
-		if (str[i] == c)
-			return (i);
-		i++;
+		if (env_p != 0)
+			return (env_p);
 	}
-	return (0);
+	else
+	{
+		if (env_p != 0)
+			return (-1);
+	}
+	return (-2);
 }

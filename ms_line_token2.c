@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:46:02 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:15:04 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/26 22:35:11 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	line_token_str(t_cmd *cmd, char *line, int *line_i, int *i)
 			if (tmp == NULL)
 			{
 				cmd->line_split[++(*line_i)] = NULL;
-				ft_line_split_free(cmd->line_split);
+				ms_line_split_free(cmd);
 				return ;
 			}
 		}

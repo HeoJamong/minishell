@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 21:32:44 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/20 15:18:14 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/26 23:06:50 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ void	start_echo(t_plst *l, t_cmd *c, int ca_cnt)
 
 	i = 1;
 	if (sn(l->pipe_split[1], "-n", 2) \
-		&& sl(l->pipe_split[1]) == 2)
+		&& echo_cmd_check(l) == 1)
 	{
-		i = 2;
+		while (sn(l->pipe_split[i], "-n", 2) && echo_cmd_check(l) == 1)
+			i++;
 		while (i + 1 < ca_cnt)
 			printf("%s ", l->pipe_split[i++]);
-		printf("%s", l->pipe_split[i]);
+		if (l->pipe_split[i] != 0)
+			printf("%s", l->pipe_split[i]);
 	}
 	else
 	{
@@ -91,9 +93,9 @@ int	ms_builtin_func(t_cmd *c, t_plst *l)
 		else
 			start_export(l, c);
 	}
-	else if (sn(l->pipe_split[0], "unset", 5) && sl(l->pipe_split[0]))
+	else if (sn(l->pipe_split[0], "unset", 5) && sl(l->pipe_split[0]) == 5)
 		start_unset(c, l);
-	else if (sn(l->pipe_split[0], "env", 3))
+	else if (sn(l->pipe_split[0], "env", 3) && sl(l->pipe_split[0]) == 3)
 		c->sts.process_status = print_env(c->envp);
 	else
 		return (1);

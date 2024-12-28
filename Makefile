@@ -1,10 +1,11 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror
 
 NAME =	minishell
 SRC =	main.c \
 		ms_lst.c \
 		ms_utils.c \
+		ms_utils2.c \
 		ms_signal1.c \
 		ms_signal2.c \
 		ms_replace_env.c \

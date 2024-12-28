@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_line_token_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jinsecho <jinsecho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:33:09 by jinsecho          #+#    #+#             */
-/*   Updated: 2024/12/22 20:28:51 by jinsecho         ###   ########.fr       */
+/*   Updated: 2024/12/26 22:52:48 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ char	*ms_line_tokenizing_quote(t_cmd *cmd, char *line, int *i)
 	int		quote_flag;
 
 	quote_flag = 0;
-	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
-	if (ptr == NULL)
-		exit (EXIT_FAILURE);
+	if (line[(*i) + 1] == 0)
+		return (NULL);
 	if (line[(*i)++] == DOUBLE_QUOTE)
 		k = quote_flag_len(line, DOUBLE_QUOTE, i, &quote_flag);
 	else
 		k = quote_flag_len(line, SINGLE_QUOTE, i, &quote_flag);
+	ptr = (char *)malloc(sizeof(char) * ft_strlen(line) + 1);
 	ft_strlcpy(ptr, line + *i, k + 1);
 	(*i) += k;
 	if (line[*i] == 0)

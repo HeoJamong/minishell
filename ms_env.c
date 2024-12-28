@@ -6,7 +6,7 @@
 /*   By: jheo <jheo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:43:36 by jheo              #+#    #+#             */
-/*   Updated: 2024/12/20 16:40:45 by jheo             ###   ########.fr       */
+/*   Updated: 2024/12/26 22:05:56 by jheo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ void	new_export(char *str, char **new, int index)
 	new[index + 1] = NULL;
 }
 
-int	e_pointer_export_check(int e_pointer, char *str)
+int	e_export_check(int e, char *str)
 {
 	int	i;
 
 	i = 0;
-	if (e_pointer)
+	if (e)
 	{
-		while (i < e_pointer)
+		while (i < e)
 		{
 			if (check_ispossible_export(str[i]) == 0)
 				return (0);
@@ -65,39 +65,42 @@ int	e_pointer_export_check(int e_pointer, char *str)
 	return (1);
 }
 
-int	change_env(t_cmd *cmd, char *str, int *i)
+int	change_env(t_cmd *cmd, char *str, int *i, int e)
 {
 	int	return_value;
 
-	while ((cmd->envp)[*i])
+	return_value = check_env(str, cmd->envp, e);
+	if (return_value == -2)
 	{
-		return_value = check_env(str, (cmd->envp)[*i]);
-		if (return_value == 1)
-		{
-			free((cmd->envp)[*i]);
-			(cmd->envp)[*i] = ft_strdup(str);
-			return (1);
-		}
-		else if (return_value == 2)
-			return (2);
-		(*i)++;
+		return_value = 0;
+		while (cmd->envp[return_value])
+			return_value++;
 	}
+	else if (return_value >= 0)
+	{
+		free((cmd->envp)[return_value]);
+		(cmd->envp)[return_value] = ft_strdup(str);
+		return (1);
+	}
+	else if (return_value == -1)
+		return (1);
+	*i = return_value;
 	return (0);
 }
 
 int	ft_export(char *str, t_cmd *cmd)
 {
 	int		i;
-	int		e_pointer;
+	int		e;
 	char	**new;
 
 	i = 0;
 	if (!(str[0] == '_' || ft_isalpha(str[0])))
 		return (0);
-	e_pointer = find_char_index(str, '=');
-	if (e_pointer_export_check(e_pointer, str) == 0)
+	e = find_char_index(str, '=');
+	if (e_export_check(e, str) == 0)
 		return (0);
-	if (change_env(cmd, str, &i) == 1 || change_env(cmd, str, &i) == 2)
+	if (change_env(cmd, str, &i, e) == 1)
 		return (1);
 	new = malloc(sizeof(char *) * (i + 2));
 	if (new == NULL)
